@@ -2,26 +2,26 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Проверяет rate limiting для подарочных карт
- * Ограничивает количество попыток применения карт с одного IP
+ * Prevent brute force attacks by limiting gift card redemption attempts per IP
+ * This helps protect against people trying to guess gift card codes
  */
 function cgfwc_check_rate_limit( $ip = null ) {
     if ( ! $ip ) {
         $ip = cgfwc_get_user_ip();
     }
     
-    // Проверяем количество попыток за последний час
+    // Check how many attempts this IP has made in the last hour
     $attempts_key = "giftcard_attempts_{$ip}";
     $attempts = get_transient( $attempts_key );
     
-    // Максимум 10 попыток в час
+    // Allow max 10 attempts per hour (can be filtered by other plugins)
     $max_attempts = apply_filters( 'cgfwc_max_attempts_per_hour', 10 );
     
     if ( $attempts && $attempts >= $max_attempts ) {
         return false;
     }
     
-    // Увеличиваем счетчик попыток
+    // Increment the attempt counter
     $new_attempts = ( $attempts ?: 0 ) + 1;
     set_transient( $attempts_key, $new_attempts, HOUR_IN_SECONDS );
     
@@ -29,7 +29,7 @@ function cgfwc_check_rate_limit( $ip = null ) {
 }
 
 /**
- * Проверяет временную блокировку IP
+ * Check if an IP address is temporarily blocked from making gift card attempts
  */
 function cgfwc_check_temporary_block( $ip = null ) {
     if ( ! $ip ) {
@@ -38,14 +38,14 @@ function cgfwc_check_temporary_block( $ip = null ) {
     
     $blocked_until = get_transient( "giftcard_blocked_{$ip}" );
     if ( $blocked_until && $blocked_until > time() ) {
-        return false; // IP заблокирован
+        return false; // This IP is currently blocked
     }
     
     return true;
 }
 
 /**
- * Блокирует IP на определенное время
+ * Temporarily block an IP address from making gift card attempts
  */
 function cgfwc_block_ip_temporarily( $ip = null, $duration = 3600 ) {
     if ( ! $ip ) {
@@ -55,7 +55,7 @@ function cgfwc_block_ip_temporarily( $ip = null, $duration = 3600 ) {
     $block_until = time() + $duration;
     set_transient( "giftcard_blocked_{$ip}", $block_until, $duration );
     
-    // Логируем блокировку
+    // Log the blocking action for admin review
     $logger = wc_get_logger();
     $logger->warning( "IP {$ip} temporarily blocked for gift card abuse", [
         'source' => 'giftcards',
@@ -66,7 +66,7 @@ function cgfwc_block_ip_temporarily( $ip = null, $duration = 3600 ) {
 }
 
 /**
- * Получает IP адрес пользователя для логирования
+ * Get the user's real IP address, even behind proxies and load balancers
  */
 function cgfwc_get_user_ip() {
     $ip_keys = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
@@ -84,14 +84,14 @@ function cgfwc_get_user_ip() {
 }
 
 /**
- * Проверяет подозрительную активность для конкретной карты
+ * Detect suspicious activity for a specific gift card and block it if needed
  */
 function cgfwc_detect_suspicious_activity( $code, $ip = null ) {
     if ( ! $ip ) {
         $ip = cgfwc_get_user_ip();
     }
     
-    // Получаем карту по коду
+    // Find the gift card by its code
     $card_post = cgfwc_get_gift_card_by_code( $code );
     if ( ! $card_post ) {
         return false;
@@ -99,10 +99,10 @@ function cgfwc_detect_suspicious_activity( $code, $ip = null ) {
     
     $gc_id = $card_post->ID;
     
-    // Проверяем количество неудачных попыток
+    // Check how many times someone has failed to use this card
     $failed_attempts = get_post_meta( $gc_id, '_failed_attempts', true ) ?: 0;
     
-    // Если больше 5 неудачных попыток - блокируем карту
+    // If there are too many failed attempts, block the card to prevent abuse
     if ( $failed_attempts > 5 ) {
         update_post_meta( $gc_id, '_cgfwc_status', 'blocked' );
         
@@ -121,7 +121,7 @@ function cgfwc_detect_suspicious_activity( $code, $ip = null ) {
 }
 
 /**
- * Увеличивает счетчик неудачных попыток для карты
+ * Keep track of failed attempts to use a gift card (helps detect fraud)
  */
 function cgfwc_increment_failed_attempts( $code ) {
     $card_post = cgfwc_get_gift_card_by_code( $code );
@@ -135,7 +135,7 @@ function cgfwc_increment_failed_attempts( $code ) {
     
     update_post_meta( $gc_id, '_failed_attempts', $failed_attempts );
     
-    // Логируем неудачную попытку
+    // Log the failed attempt so admins can review suspicious activity
     $logger = wc_get_logger();
     $logger->info( "Failed gift card attempt for code {$code}", [
         'source' => 'giftcards',
@@ -146,7 +146,7 @@ function cgfwc_increment_failed_attempts( $code ) {
 }
 
 /**
- * Сбрасывает счетчик неудачных попыток при успешном использовании
+ * Reset failed attempts counter when a gift card is successfully used
  */
 function cgfwc_reset_failed_attempts( $code ) {
     $card_post = cgfwc_get_gift_card_by_code( $code );

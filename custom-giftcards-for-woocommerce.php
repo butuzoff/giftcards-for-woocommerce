@@ -13,19 +13,19 @@ define( 'CGFWC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CGFWC_VERSION', '1.0.9' );
 
 /**
- * 1) Класс shipping-email (priority 0)
+ * Load email shipping method early to ensure proper initialization
  */
 add_action( 'plugins_loaded', function() {
     require_once CGFWC_PLUGIN_DIR . 'includes/shipping-email.php';
 }, 0 );
 
 /**
- * 2) Основные фильтры и функции для корзины и чекаута
+ * Core functionality: Cart and checkout filters and functions
  */
 require_once CGFWC_PLUGIN_DIR . 'includes/checkout-filters.php';
 
 /**
- * 3) Шорткоды, поля товаров, личный кабинет и т.д.
+ * User interface components: Shortcodes, admin fields, and user account features
  */
 require_once CGFWC_PLUGIN_DIR . 'includes/shortcodes.php';
 require_once CGFWC_PLUGIN_DIR . 'includes/admin-product-fields.php';
@@ -35,32 +35,34 @@ require_once CGFWC_PLUGIN_DIR . 'includes/post-types.php';
 require_once CGFWC_PLUGIN_DIR . 'includes/generate-giftcards.php';
 
 /**
- * 4) Форма в корзине – после того, как объявлены функции из checkout-filters.php
+ * Cart form functionality - loaded after checkout filters are defined
  */
 require_once CGFWC_PLUGIN_DIR . 'includes/cart-giftcard-form.php';
 
 /**
- * 5) Функции безопасности
+ * Security features: Rate limiting, fraud detection, and access control
  */
 require_once CGFWC_PLUGIN_DIR . 'includes/security-functions.php';
 
 /**
- * 6) GitHub обновления
+ * Auto-update system via GitHub releases
  */
 require_once CGFWC_PLUGIN_DIR . 'includes/github-updater.php';
 
 
 
 
+// Show a friendly welcome notice when the plugin is first activated
 add_action('admin_notices', function() {
     if (get_user_meta(get_current_user_id(), '_cgfwc_notice_dismissed', true)) {
         return;
     }
     echo '<div class="notice notice-success is-dismissible cgfwc-notice">
-        <p><strong>Плагин Подарочных карт установлен и работает.</strong> Исключительные права принадлежат <a href="https://flancer.eu" target="_blank">Flancer.eu</a>. Разработан специально для <a href="https://lecharmie.com" target="_blank">lecharmie.com</a></p>
+        <p><strong>Gift Cards plugin is up and running!</strong> Developed by <a href="https://flancer.eu" target="_blank">Flancer.eu</a></p>
     </div>';
 });
 
+// Handle dismissal of admin notices with a simple AJAX call
 add_action('admin_footer', function () {
     ?>
     <script>
@@ -73,6 +75,7 @@ add_action('admin_footer', function () {
     <?php
 });
 
+// Save the user's preference to hide the welcome notice
 add_action('wp_ajax_cgfwc_dismiss_notice', function () {
     update_user_meta(get_current_user_id(), '_cgfwc_notice_dismissed', 1);
     wp_die();
