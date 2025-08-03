@@ -236,6 +236,33 @@ WordPress Plugin License: GPL v2 or later
 
 ---
 
+## 📋 Changelog
+
+### 1.0.10 (2025-01-XX)
+* **Critical Bug Fix**: Fixed Fatal Error in gift card generation caused by misplaced code execution
+* **Code Improvement**: Removed all Russian language comments for better international compatibility  
+* **Code Quality**: Improved code organization and documentation
+
+### 1.0.9 (2025-01-XX)
+* **Security Enhancement**: Added comprehensive rate limiting system to prevent brute force attacks
+* **Security Enhancement**: Implemented suspicious activity detection and automatic card blocking
+* **Bug Fix**: Fixed double balance deduction issue in checkout process
+* **Security Enhancement**: Added IP-based temporary blocking for abusive behavior
+* **Security Enhancement**: Enhanced logging for all gift card operations
+* **Security Enhancement**: Added failed attempts tracking per gift card
+* **Code Improvement**: Centralized security functions in dedicated file
+* **Code Improvement**: Removed duplicate functions and improved code organization
+
+### 1.0.8 (2025-01-XX)
+* Enhanced security with comprehensive nonce validation
+* Improved gift card expiration management
+* Added race condition protection for balance deductions
+* Mobile-responsive design improvements
+* Detailed operation logging
+* WooCommerce 5.0+ compatibility improvements
+
+---
+
 ## 📊 Project Statistics
 
 [![GitHub stars](https://img.shields.io/github/stars/butuzoff/giftcards-for-woocommerce?style=social)](https://github.com/butuzoff/giftcards-for-woocommerce/stargazers)

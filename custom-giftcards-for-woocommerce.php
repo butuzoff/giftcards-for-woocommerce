@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Custom Giftcards for WooCommerce
  * Description: Gift card checkout, PDF download, balance tracking.
- * Version: 1.0.9
+ * Version: 1.0.10
  * Author: FLANCER.EU
  */
 
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
 
 
 define( 'CGFWC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'CGFWC_VERSION', '1.0.9' );
+define( 'CGFWC_VERSION', '1.0.10' );
 
 /**
  * Load email shipping method early to ensure proper initialization

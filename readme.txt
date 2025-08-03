@@ -4,7 +4,7 @@ Tags: woocommerce, gift cards, payments, certificates
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,11 @@ Yes! The plugin supports partial usage, allowing customers to use gift cards acr
 Absolutely! All gift cards are protected with unique codes, expiration dates, and nonce validation to prevent unauthorized usage.
 
 == Changelog ==
+
+= 1.0.10 =
+* **Critical Bug Fix**: Fixed Fatal Error in gift card generation caused by misplaced code execution
+* **Code Improvement**: Removed all Russian language comments for better international compatibility
+* **Code Quality**: Improved code organization and documentation
 
 = 1.0.9 =
 * **Security Enhancement**: Added comprehensive rate limiting system to prevent brute force attacks
