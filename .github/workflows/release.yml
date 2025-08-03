@@ -65,7 +65,6 @@ jobs:
             -x "vendor/*" \
             -x ".vscode/*" \
             -x ".idea/*" \
-            -x ".cursor/*" \
             -x "README.md" \
             -x "RELEASE_*" \
             -x ".github/*"
@@ -117,7 +116,7 @@ jobs:
             ### 🔗 Links:
             - [Documentation](https://github.com/butuzoff/giftcards-for-woocommerce)
             - [Support](https://flancer.eu)
-            - [Website](https://lecharmie.com)
+       
             
             ### 📝 Requirements:
             - WordPress 5.0+
@@ -125,7 +124,7 @@ jobs:
             - PHP 7.4+
             
             ---
-            **Developed by [Flancer.eu](https://flancer.eu) specifically for [LeCharmie.com](https://lecharmie.com)**
+            **Developed by [Flancer.eu](https://flancer.eu)**
           draft: false
           prerelease: false
           
