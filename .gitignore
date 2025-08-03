@@ -1,0 +1,135 @@
+# WordPress плагин WooCommerce Gift Cards - .gitignore
+
+# Системные файлы
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE и редакторы
+.vscode/
+.idea/
+.cursor/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Временные файлы
+*.tmp
+*.temp
+*.log
+*.cache
+
+# WordPress специфичные файлы
+wp-config.php
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/mu-plugins/
+wp-content/wp-cache-config.php
+wp-content/plugins/hello.php
+
+# WooCommerce специфичные файлы
+wp-content/uploads/woocommerce_uploads/
+wp-content/uploads/wc-logs/
+
+# Логи плагина
+*.log
+logs/
+debug.log
+
+# База данных
+*.sql
+*.sqlite
+*.db
+
+# Конфигурационные файлы
+config.php
+.env
+.env.local
+.env.production
+.env.staging
+
+# Зависимости (если используется Composer)
+vendor/
+composer.lock
+
+# Node.js (если используется для сборки)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Сборка и дистрибутивы
+build/
+dist/
+*.zip
+*.tar.gz
+
+# Тестирование
+phpunit.xml
+tests/coverage/
+.phpunit.result.cache
+
+# Локальные настройки
+local-config.php
+wp-config-local.php
+
+# Резервные копии
+*.bak
+*.backup
+*.old
+
+# Временные файлы плагина
+giftcards-for-woocommerce/temp/
+giftcards-for-woocommerce/cache/
+giftcards-for-woocommerce/logs/
+
+# Файлы разработки
+*.dev.php
+*.test.php
+*.debug.php
+
+# Документация (опционально)
+docs/_build/
+docs/.doctrees/
+
+# Файлы переводов (опционально, если не хотите коммитить переводы)
+*.po~
+*.mo~
+
+# Файлы безопасности
+.htaccess
+robots.txt
+
+# Файлы специфичные для проекта
+giftcards-for-woocommerce/README.md
+giftcards-for-woocommerce/CHANGELOG.md
+giftcards-for-woocommerce/LICENSE
+
+# Инструкции по релизам (локальные копии)
+RELEASE_SYSTEM.md
+RELEASE_QUICK.md
+RELEASE_TEMPLATES.md
+RELEASE_README.md
+
+# Исключения для WordPress плагинов
+!wp-content/plugins/giftcards-for-woocommerce/
+!wp-content/themes/
+!wp-content/mu-plugins/
+
+# Файлы, которые должны быть в репозитории
+!wp-content/plugins/giftcards-for-woocommerce/readme.txt
+!wp-content/plugins/giftcards-for-woocommerce/giftcards-for-woocommerce.php 
