@@ -4,7 +4,7 @@ Tags: woocommerce, gift cards, payments, certificates
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.11-test
+Stable tag: 1.0.12
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,7 +79,7 @@ Absolutely! All gift cards are protected with unique codes, expiration dates, an
 
 == Changelog ==
 
-= 1.0.11-test =
+= 1.0.12 =
 * **Testing**: Reduced update check cache from 12 hours to 2 hours for faster update detection
 * **Testing**: This is a test release to verify the update notification system
 

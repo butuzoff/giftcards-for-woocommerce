@@ -238,7 +238,7 @@ WordPress Plugin License: GPL v2 or later
 
 ## 📋 Changelog
 
-### 1.0.11-test (2025-01-XX)
+### 1.0.12 (2025-01-XX)
 * **Testing**: Reduced update check cache from 12 hours to 2 hours for faster update detection
 * **Testing**: This is a test release to verify the update notification system
 
