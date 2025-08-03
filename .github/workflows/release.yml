@@ -6,74 +6,45 @@ on:
       - 'v*'
 
 jobs:
-  build-and-release:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Extract version from tag
-        id: get_version
+      - name: Get version
+        id: version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         
-      - name: Create plugin archive
+      - name: Build plugin
         run: |
           mkdir -p build/giftcards-for-woocommerce
-          
-          # Copy plugin files
           cp custom-giftcards-for-woocommerce.php build/giftcards-for-woocommerce/
           cp -r includes/ build/giftcards-for-woocommerce/
           
-          # Copy or create readme.txt
           if [ -f "readme.txt" ]; then
             cp readme.txt build/giftcards-for-woocommerce/
-          else
-            cat > build/giftcards-for-woocommerce/readme.txt << EOL
-=== Custom Gift Cards for WooCommerce ===
-Stable tag: ${{ steps.get_version.outputs.VERSION }}
-License: GPL v2 or later
-EOL
           fi
           
-          # Create ZIP archive
           cd build
-          zip -r "../giftcards-for-woocommerce-${{ steps.get_version.outputs.VERSION }}.zip" giftcards-for-woocommerce
-          cd ..
+          zip -r "../giftcards-for-woocommerce-${{ steps.version.outputs.VERSION }}.zip" giftcards-for-woocommerce
           
-          # Verify archive
-          echo "Archive created:"
-          ls -la giftcards-for-woocommerce-*.zip
-          
-      - name: Create GitHub Release
-        id: create_release
+      - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          files: giftcards-for-woocommerce-${{ steps.get_version.outputs.VERSION }}.zip
-          name: Gift Cards Plugin v${{ steps.get_version.outputs.VERSION }}
+          files: giftcards-for-woocommerce-${{ steps.version.outputs.VERSION }}.zip
+          name: v${{ steps.version.outputs.VERSION }}
           body: |
-            ## 🎁 WooCommerce Gift Cards Plugin v${{ steps.get_version.outputs.VERSION }}
+            ## Gift Cards Plugin v${{ steps.version.outputs.VERSION }}
             
-            ### 📋 What's New in This Version:
+            **Security Enhancements:**
+            - Rate limiting system
+            - Suspicious activity detection  
+            - Fixed double balance deduction
+            - IP-based blocking
+            - Enhanced logging
             
-            **🔒 Security Enhancements:**
-            - Added comprehensive rate limiting system
-            - Implemented suspicious activity detection
-            - Fixed double balance deduction issue
-            - Added IP-based temporary blocking
-            - Enhanced logging for all operations
-            
-            ### 📦 Installation:
-            1. Download the archive
-            2. Upload to `/wp-content/plugins/`
-            3. Activate the plugin
-            4. Configure gift card products
-            
-            ### 📝 Requirements:
-            - WordPress 5.0+
-            - WooCommerce 5.0+
-            - PHP 7.4+
-          draft: false
-          prerelease: false
+            **Requirements:** WordPress 5.0+, WooCommerce 5.0+, PHP 7.4+
