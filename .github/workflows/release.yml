@@ -8,104 +8,62 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          
-      - name: Validate plugin files
-        run: |
-          echo "Validating plugin structure..."
-          if [ ! -f "custom-giftcards-for-woocommerce.php" ]; then
-            echo "❌ Main plugin file not found!"
-            exit 1
-          fi
-          echo "✅ Plugin structure validated"
-          
-      - name: Extract version from plugin header
-        id: version
-        run: |
-          VERSION=$(grep "Version:" custom-giftcards-for-woocommerce.php | sed 's/.*Version: //' | tr -d ' ')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "📦 Plugin version: $VERSION"
-          
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        
       - name: Create plugin archive
         run: |
-          # Создаем временную папку с правильным именем плагина
-          mkdir -p temp-release/giftcards-for-woocommerce
+          mkdir -p build/giftcards-for-woocommerce
           
-          # Копируем файлы плагина в правильную структуру
-          cp custom-giftcards-for-woocommerce.php temp-release/giftcards-for-woocommerce/
+          # Copy plugin files
+          cp custom-giftcards-for-woocommerce.php build/giftcards-for-woocommerce/
+          cp -r includes/ build/giftcards-for-woocommerce/
           
-          # Проверяем наличие readme.txt
+          # Copy or create readme.txt
           if [ -f "readme.txt" ]; then
-            echo "✅ readme.txt found, copying..."
-            cp readme.txt temp-release/giftcards-for-woocommerce/
+            cp readme.txt build/giftcards-for-woocommerce/
           else
-            echo "⚠️ readme.txt not found, creating minimal version..."
-            echo "=== Custom Gift Cards for WooCommerce ===" > temp-release/giftcards-for-woocommerce/readme.txt
-            echo "Stable tag: ${{ steps.version.outputs.version }}" >> temp-release/giftcards-for-woocommerce/readme.txt
-            echo "License: GPL v2 or later" >> temp-release/giftcards-for-woocommerce/readme.txt
+            cat > build/giftcards-for-woocommerce/readme.txt << EOL
+=== Custom Gift Cards for WooCommerce ===
+Stable tag: ${{ steps.get_version.outputs.VERSION }}
+License: GPL v2 or later
+EOL
           fi
           
-          cp -r includes/ temp-release/giftcards-for-woocommerce/
-          
-          # Создаем архив с правильной структурой для WordPress
-          cd temp-release
-          zip -r "../giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip" . \
-            -x "*.git*" \
-            -x "*.DS_Store*" \
-            -x "*.log" \
-            -x "node_modules/*" \
-            -x "vendor/*" \
-            -x ".vscode/*" \
-            -x ".idea/*" \
-            -x "README.md" \
-            -x "RELEASE_*" \
-            -x ".github/*"
-          
-          # Очищаем временную папку
+          # Create ZIP archive
+          cd build
+          zip -r "../giftcards-for-woocommerce-${{ steps.get_version.outputs.VERSION }}.zip" giftcards-for-woocommerce
           cd ..
-          rm -rf temp-release
           
-          echo "📦 Archive created: giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip"
-          echo "📁 Archive structure verified:"
-          unzip -l "giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip" | head -10
+          # Verify archive
+          echo "Archive created:"
+          ls -la giftcards-for-woocommerce-*.zip
           
-      - name: Create Release
+      - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Gift Cards Plugin v${{ steps.version.outputs.version }}
+          files: giftcards-for-woocommerce-${{ steps.get_version.outputs.VERSION }}.zip
+          name: Gift Cards Plugin v${{ steps.get_version.outputs.VERSION }}
           body: |
-            ## 🎁 WooCommerce Gift Cards Plugin v${{ steps.version.outputs.version }}
+            ## 🎁 WooCommerce Gift Cards Plugin v${{ steps.get_version.outputs.VERSION }}
             
             ### 📋 What's New in This Version:
             
             **🔒 Security Enhancements:**
-            - Added nonce validation to all forms
-            - Implemented gift card expiration checks
-            - Enhanced input data validation
-            - Fixed race conditions in balance deductions
-            
-            **🎯 New Features:**
-            - Support for partial gift card usage
-            - Improved interface with status indicators
-            - Mobile-responsive design
-            - Detailed operation logging
-            
-            **🐛 Bug Fixes:**
-            - Enhanced WooCommerce 5.0+ compatibility
-            - Performance optimizations
-            - Minor interface improvements
+            - Added comprehensive rate limiting system
+            - Implemented suspicious activity detection
+            - Fixed double balance deduction issue
+            - Added IP-based temporary blocking
+            - Enhanced logging for all operations
             
             ### 📦 Installation:
             1. Download the archive
@@ -113,33 +71,9 @@ jobs:
             3. Activate the plugin
             4. Configure gift card products
             
-            ### 🔗 Links:
-            - [Documentation](https://github.com/butuzoff/giftcards-for-woocommerce)
-            - [Support](https://flancer.eu)
-       
-            
             ### 📝 Requirements:
             - WordPress 5.0+
             - WooCommerce 5.0+
             - PHP 7.4+
-            
-            ---
-            **Developed by [Flancer.eu](https://flancer.eu)**
           draft: false
           prerelease: false
-          
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip
-          asset_name: giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip
-          asset_content_type: application/zip
-          
-      - name: Success notification
-        run: |
-          echo "🎉 Release v${{ steps.version.outputs.version }} created successfully!"
-          echo "📦 Archive: giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip"
-          echo "🔗 Release URL: ${{ steps.create_release.outputs.upload_url }}"
