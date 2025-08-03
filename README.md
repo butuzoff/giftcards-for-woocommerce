@@ -74,39 +74,8 @@ Users can view their cards in **My Account → Gift Cards**
 - **PHP**: 7.4+
 - **MySQL**: 5.6+
 
-### 🛠️ Development
 
-#### Project Structure
-```
-giftcards-for-woocommerce/
-├── custom-giftcards-for-woocommerce.php  # Main plugin file
-├── includes/                             # Core components
-│   ├── shipping-email.php               # Email notifications
-│   ├── checkout-filters.php             # Checkout filters
-│   ├── shortcodes.php                   # Shortcodes
-│   ├── admin-product-fields.php         # Product fields
-│   ├── account-giftcards.php            # Account integration
-│   ├── checkout-giftcard-payment.php    # Gift card payments
-│   ├── cart-giftcard-form.php           # Cart form
-│   ├── post-types.php                   # Custom post types
-│   ├── generate-giftcards.php           # Card generation
-│   └── github-updater.php               # GitHub updates
-└── .github/workflows/                   # GitHub Actions
-    └── release.yml                      # Automated releases
-```
 
-#### Creating Releases
-```bash
-# 1. Update version in custom-giftcards-for-woocommerce.php
-# 2. Commit changes
-git add .
-git commit -m "feat: Add new feature"
-git push origin main
-
-# 3. Create release
-git tag v1.0.8
-git push origin v1.0.8
-```
 
 ### 🔒 Security
 
@@ -118,13 +87,13 @@ git push origin v1.0.8
 
 ### 📝 License
 
-Exclusive rights belong to [Flancer.eu](https://flancer.eu). Developed specifically for [LeCharmie.com](https://lecharmie.com).
+Exclusive rights belong to [Flancer.eu](https://flancer.eu). 
 
 ### 🆘 Support
 
 - **Documentation**: [GitHub Wiki](https://github.com/butuzoff/giftcards-for-woocommerce/wiki)
 - **Support**: [Flancer.eu](https://flancer.eu)
-- **Website**: [LeCharmie.com](https://lecharmie.com)
+
 
 ---
 
@@ -198,39 +167,7 @@ Exclusive rights belong to [Flancer.eu](https://flancer.eu). Developed specifica
 - **PHP**: 7.4+
 - **MySQL**: 5.6+
 
-### 🛠️ Розробка
 
-#### Структура проекту
-```
-giftcards-for-woocommerce/
-├── custom-giftcards-for-woocommerce.php  # Головний файл плагіна
-├── includes/                             # Основні компоненти
-│   ├── shipping-email.php               # Email сповіщення
-│   ├── checkout-filters.php             # Фільтри оформлення
-│   ├── shortcodes.php                   # Шорткоди
-│   ├── admin-product-fields.php         # Поля товарів
-│   ├── account-giftcards.php            # Інтеграція з кабінетом
-│   ├── checkout-giftcard-payment.php    # Оплата картами
-│   ├── cart-giftcard-form.php           # Форма в кошику
-│   ├── post-types.php                   # Типи записів
-│   ├── generate-giftcards.php           # Генерація карт
-│   └── github-updater.php               # GitHub оновлення
-└── .github/workflows/                   # GitHub Actions
-    └── release.yml                      # Автоматичні релізи
-```
-
-#### Створення релізів
-```bash
-# 1. Оновити версію в custom-giftcards-for-woocommerce.php
-# 2. Закомітити зміни
-git add .
-git commit -m "feat: Add new feature"
-git push origin main
-
-# 3. Створити реліз
-git tag v1.0.8
-git push origin v1.0.8
-```
 
 ### 🔒 Безпека
 
@@ -242,13 +179,13 @@ git push origin v1.0.8
 
 ### 📝 Ліцензія
 
-Виключні права належать [Flancer.eu](https://flancer.eu). Розроблено спеціально для [LeCharmie.com](https://lecharmie.com).
+Виключні права належать [Flancer.eu](https://flancer.eu).
 
 ### 🆘 Підтримка
 
 - **Документація**: [GitHub Wiki](https://github.com/butuzoff/giftcards-for-woocommerce/wiki)
 - **Підтримка**: [Flancer.eu](https://flancer.eu)
-- **Сайт**: [LeCharmie.com](https://lecharmie.com)
+
 
 ### 🔄 Оновлення
 
