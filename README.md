@@ -1,12 +1,12 @@
 # 🎁 Custom Gift Cards for WooCommerce / Подарункові карти для WooCommerce
 
 [![Release](https://img.shields.io/github/v/release/butuzoff/giftcards-for-woocommerce?style=flat-square&logo=github&color=blue)](https://github.com/butuzoff/giftcards-for-woocommerce/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/butuzoff/giftcards-for-woocommerce/release.yml?style=flat-square&logo=github&label=release)](https://github.com/butuzoff/giftcards-for-woocommerce/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/butuzoff/giftcards-for-woocommerce/release.yml?style=flat-square&logo=github&label=release)](https://github.com/butuzoff/giftcards-for-woocommerce/actions/workflows/release.yml)
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue?style=flat-square&logo=wordpress)](https://wordpress.org/)
 [![WooCommerce](https://img.shields.io/badge/WooCommerce-5.0%2B-purple?style=flat-square&logo=woocommerce)](https://woocommerce.com/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net/)
 [![MySQL](https://img.shields.io/badge/MySQL-5.6%2B-4479A1?style=flat-square&logo=mysql&logoColor=white)](https://mysql.com/)
-[![License](https://img.shields.io/badge/License-Custom-red?style=flat-square)](https://flancer.eu)
+[![License](https://img.shields.io/badge/License-GPL%20v2-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![Developer](https://img.shields.io/badge/Developer-Flancer.eu-orange?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K)](https://flancer.eu)
 
 *[English](#english) | [Українська](#українська)*

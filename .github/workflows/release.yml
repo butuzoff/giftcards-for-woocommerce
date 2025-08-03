@@ -41,7 +41,18 @@ jobs:
           
           # Копируем файлы плагина в правильную структуру
           cp custom-giftcards-for-woocommerce.php temp-release/giftcards-for-woocommerce/
-          cp readme.txt temp-release/giftcards-for-woocommerce/
+          
+          # Проверяем наличие readme.txt
+          if [ -f "readme.txt" ]; then
+            echo "✅ readme.txt found, copying..."
+            cp readme.txt temp-release/giftcards-for-woocommerce/
+          else
+            echo "⚠️ readme.txt not found, creating minimal version..."
+            echo "=== Custom Gift Cards for WooCommerce ===" > temp-release/giftcards-for-woocommerce/readme.txt
+            echo "Stable tag: ${{ steps.version.outputs.version }}" >> temp-release/giftcards-for-woocommerce/readme.txt
+            echo "License: GPL v2 or later" >> temp-release/giftcards-for-woocommerce/readme.txt
+          fi
+          
           cp -r includes/ temp-release/giftcards-for-woocommerce/
           
           # Создаем архив с правильной структурой для WordPress
