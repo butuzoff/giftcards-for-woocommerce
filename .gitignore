@@ -114,7 +114,7 @@ docs/.doctrees/
 .htaccess
 robots.txt
 
-# Файлы специфичные для проекта
+# Файлы специфичные для проекта (локальные копии)
 giftcards-for-woocommerce/README.md
 giftcards-for-woocommerce/CHANGELOG.md
 giftcards-for-woocommerce/LICENSE
@@ -125,6 +125,10 @@ RELEASE_QUICK.md
 RELEASE_TEMPLATES.md
 RELEASE_README.md
 
+# Исключаем локальные файлы разработки
+*.local
+*.dev
+
 # Исключения для WordPress плагинов
 !wp-content/plugins/giftcards-for-woocommerce/
 !wp-content/themes/
@@ -132,4 +136,9 @@ RELEASE_README.md
 
 # Файлы, которые должны быть в репозитории
 !wp-content/plugins/giftcards-for-woocommerce/readme.txt
-!wp-content/plugins/giftcards-for-woocommerce/giftcards-for-woocommerce.php 
+!wp-content/plugins/giftcards-for-woocommerce/custom-giftcards-for-woocommerce.php
+
+# GitHub Actions должны быть в репозитории
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml 
