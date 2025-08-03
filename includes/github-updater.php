@@ -2,59 +2,48 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Класс для автоматического обновления плагина с GitHub
- * Поддерживает обновления из GitHub Releases
  */
 class CGFWC_GitHub_Updater {
     
     /**
-     * GitHub репозиторий
      */
     private $github_repo = 'butuzoff/giftcards-for-woocommerce';
     
     /**
-     * Основной файл плагина
      */
     private $plugin_file;
     
     /**
-     * Slug плагина
      */
     private $plugin_slug;
     
     /**
-     * Текущая версия плагина
      */
     private $current_version;
     
     /**
-     * Конструктор класса
      */
     public function __construct( $plugin_file ) {
         $this->plugin_file = $plugin_file;
         $this->plugin_slug = plugin_basename( $plugin_file );
         $this->current_version = CGFWC_VERSION;
         
-        // Хуки для обновления
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_github_update' ) );
         add_filter( 'plugins_api', array( $this, 'plugin_info' ), 10, 3 );
         add_filter( 'upgrader_source_selection', array( $this, 'fix_github_source' ), 10, 4 );
         add_action( 'upgrader_process_complete', array( $this, 'after_update' ), 10, 2 );
         
-        // Добавляем информацию в админку
         add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
         add_action( 'admin_notices', array( $this, 'admin_notices' ) );
     }
     
     /**
-     * Проверяет наличие обновлений на GitHub
      */
     public function check_github_update( $transient ) {
         if ( empty( $transient->checked ) ) {
             return $transient;
         }
         
-        // Получаем информацию о последнем релизе
         $github_info = $this->get_github_release_info();
         
         if ( $github_info && version_compare( $this->current_version, $github_info->tag_name, '<' ) ) {
@@ -74,7 +63,6 @@ class CGFWC_GitHub_Updater {
                 )
             );
             
-            // Логируем проверку обновления
             $this->log_update_check( $github_info );
         }
         
@@ -82,7 +70,6 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Получает информацию о последнем релизе с GitHub
      */
     private function get_github_release_info() {
         $cache_key = 'cgfwc_github_latest';
@@ -121,14 +108,12 @@ class CGFWC_GitHub_Updater {
             return false;
         }
         
-        // Кэшируем результат на 12 часов
         set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
         
         return $data;
     }
     
     /**
-     * Получает информацию о плагине для страницы обновления
      */
     public function plugin_info( $result, $action, $args ) {
         if ( $action !== 'plugin_information' ) {
@@ -165,15 +150,12 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Исправляет структуру архива GitHub для WordPress
      */
     public function fix_github_source( $source, $remote_url, $upgrader, $hook_extra ) {
         if ( strpos( $remote_url, 'github.com' ) !== false ) {
-            // GitHub архивы содержат папку с именем репозитория
             $plugin_dir = dirname( $this->plugin_slug );
             
             if ( is_dir( $source . '/' . $plugin_dir ) ) {
-                // Перемещаем содержимое в корень
                 $files = scandir( $source . '/' . $plugin_dir );
                 foreach ( $files as $file ) {
                     if ( $file !== '.' && $file !== '..' ) {
@@ -188,15 +170,12 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Действия после обновления
      */
     public function after_update( $upgrader, $hook_extra ) {
         if ( $hook_extra['action'] === 'update' && $hook_extra['type'] === 'plugin' ) {
             if ( isset( $hook_extra['plugins'] ) && in_array( $this->plugin_slug, $hook_extra['plugins'] ) ) {
-                // Очищаем кэш обновлений
                 delete_transient( 'cgfwc_github_latest' );
                 
-                // Логируем успешное обновление
                 $logger = wc_get_logger();
                 $logger->info( "Plugin updated successfully from GitHub", [
                     'source' => 'giftcards',
@@ -205,7 +184,6 @@ class CGFWC_GitHub_Updater {
                     'update_time' => current_time( 'mysql' )
                 ] );
                 
-                // Показываем уведомление
                 add_action( 'admin_notices', function() {
                     echo '<div class="notice notice-success is-dismissible">';
                     echo '<p><strong>Gift Cards Plugin</strong> has been updated successfully from GitHub!</p>';
@@ -217,7 +195,6 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Добавляет ссылки в строку плагина
      */
     public function plugin_row_meta( $links, $file ) {
         if ( $file === $this->plugin_slug ) {
@@ -229,10 +206,8 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Показывает уведомления в админке
      */
     public function admin_notices() {
-        // Проверяем наличие обновлений только в админке
         if ( ! current_user_can( 'update_plugins' ) ) {
             return;
         }
@@ -250,31 +225,26 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Получает описание плагина
      */
     private function get_plugin_description() {
         return 'A comprehensive WooCommerce plugin for managing gift cards with partial usage support, email delivery, and advanced security features.';
     }
     
     /**
-     * Форматирует changelog из GitHub
      */
     private function format_changelog( $body ) {
         if ( empty( $body ) ) {
             return 'No changelog available.';
         }
         
-        // Конвертируем markdown в HTML
         $changelog = wp_kses_post( $body );
         
-        // Добавляем базовые стили
         $changelog = '<div class="github-changelog">' . $changelog . '</div>';
         
         return $changelog;
     }
     
     /**
-     * Получает инструкции по установке
      */
     private function get_installation_instructions() {
         return '
@@ -288,7 +258,6 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Логирует проверку обновления
      */
     private function log_update_check( $github_info ) {
         $logger = wc_get_logger();
@@ -302,7 +271,6 @@ class CGFWC_GitHub_Updater {
     }
     
     /**
-     * Логирует ошибки
      */
     private function log_error( $message ) {
         $logger = wc_get_logger();
@@ -314,7 +282,6 @@ class CGFWC_GitHub_Updater {
 }
 
 /**
- * Инициализация GitHub обновления
  */
 function cgfwc_init_github_updater() {
     if ( ! class_exists( 'CGFWC_GitHub_Updater' ) ) {
@@ -322,5 +289,4 @@ function cgfwc_init_github_updater() {
     }
 }
 
-// Инициализируем обновление после загрузки плагина
 add_action( 'plugins_loaded', 'cgfwc_init_github_updater', 20 ); 

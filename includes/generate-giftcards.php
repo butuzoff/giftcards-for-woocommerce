@@ -1,13 +1,11 @@
 <?php
 defined( 'ABSPATH' ) || exit;
-// чтобы сохранять имя 
-update_post_meta( $gc_id, '_cgfwc_product_name', get_the_title( $product_id ) );
+
 add_action( 'woocommerce_thankyou', function( $order_id ) {
     if ( ! $order_id ) {
         return;
     }
     
-    // Валидируем order_id
     if ( ! is_numeric( $order_id ) || $order_id <= 0 ) {
         return;
     }
@@ -17,19 +15,16 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
         return;
     }
     
-    // Проверяем статус заказа
     if ( $order->get_status() !== 'completed' ) {
         return;
     }
     
     $user_id = $order->get_user_id();
     
-    // Проверяем, что пользователь существует
     if ( ! $user_id || ! get_user_by( 'id', $user_id ) ) {
         return;
     }
 
-    // Логируем начало генерации карт
     $logger = wc_get_logger();
     $logger->info( "Starting gift card generation for order {$order_id}", [
         'source' => 'giftcards',
@@ -41,17 +36,14 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
     foreach ( $order->get_items() as $item ) {
         $product_id = $item->get_product_id();
         
-        // Валидируем product_id
         if ( ! is_numeric( $product_id ) || $product_id <= 0 ) {
             continue;
         }
         
-        // только для Gift Card продуктов
         if ( get_post_meta( $product_id, '_cgfwc_is_gift_card', true ) !== 'yes' ) {
             continue;
         }
         
-        // сколько штук куплено
         $qty = $item->get_quantity();
         if ( $qty <= 0 ) {
             continue;
@@ -59,7 +51,6 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
         
         $amount = floatval( $item->get_total() ) / max(1, $qty);
         
-        // Валидируем сумму
         if ( $amount <= 0 ) {
             $logger->error( "Invalid gift card amount: {$amount} for product {$product_id}", [
                 'source' => 'giftcards',
@@ -70,7 +61,6 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
         }
 
         for ( $i = 0; $i < $qty; $i++ ) {
-            // Генерируем уникальный код с проверкой на дубликаты
             $attempts = 0;
             $max_attempts = 10;
             $code = '';
@@ -79,7 +69,6 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
                 $code = 'GC' . strtoupper( wp_generate_password( 8, false, false ) );
                 $attempts++;
                 
-                // Проверяем, не существует ли уже такой код
                 $existing_card = get_posts([
                     'post_type' => 'gift_card',
                     'meta_key' => '_cgfwc_giftcard_code',
@@ -98,10 +87,8 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
                 continue;
             }
             
-            // дата истечения — год от сегодня
             $expiry = date( 'Y-m-d', strtotime( '+1 year' ) );
 
-            // создаём пост gift_card с дополнительными проверками
             $gc_id = wp_insert_post([
                 'post_type'   => 'gift_card',
                 'post_title'  => $code,
@@ -110,7 +97,6 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
             ]);
 
             if ( ! is_wp_error( $gc_id ) ) {
-                // сохраняем мета с валидацией
                 update_post_meta( $gc_id, '_cgfwc_giftcard_owner', $user_id );
                 update_post_meta( $gc_id, '_cgfwc_giftcard_code',  $code );
                 update_post_meta( $gc_id, '_cgfwc_balance',       $amount );
@@ -118,8 +104,8 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
                 update_post_meta( $gc_id, '_cgfwc_pdf_url',       '' );
                 update_post_meta( $gc_id, '_cgfwc_order_id',      $order_id );
                 update_post_meta( $gc_id, '_cgfwc_created_date',  current_time( 'mysql' ) );
+                update_post_meta( $gc_id, '_cgfwc_product_name', get_the_title( $product_id ) );
                 
-                // Логируем успешное создание карты
                 $logger->info( "Gift card created successfully", [
                     'source' => 'giftcards',
                     'gift_card_id' => $gc_id,
@@ -139,7 +125,6 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
         }
     }
     
-    // Логируем завершение генерации
     $logger->info( "Gift card generation completed for order {$order_id}", [
         'source' => 'giftcards',
         'order_id' => $order_id

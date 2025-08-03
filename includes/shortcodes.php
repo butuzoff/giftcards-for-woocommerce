@@ -1,6 +1,5 @@
 <?php
 /* ------------------------------------------------------------------
- *  Шорткод [gift_card_products] 
  * -----------------------------------------------------------------*/
 add_shortcode( 'gift_card_products', function () {
 
@@ -38,32 +37,27 @@ add_shortcode( 'gift_card_products', function () {
 		echo '</div>';
 		wp_reset_postdata();
 
-		/* -- простые стили и адаптивная сетка -- */
 		echo <<<CSS
 		
 <style>
 .cgfwc-grid {
     display: grid;
     gap: 20px;
-    /* По умолчанию — 4 колонки */
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
-/* Большие планшеты и маленькие десктопы */
 @media (max-width: 1024px) {
     .cgfwc-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
-/* Мобильные — 2 колонки */
 @media (max-width: 768px) {
     .cgfwc-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
-/* Экстра-маленькие экраны — 1 колонка */
 @media (max-width: 480px) {
     .cgfwc-grid {
         grid-template-columns: 1fr;

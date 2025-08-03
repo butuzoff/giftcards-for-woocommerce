@@ -23,7 +23,7 @@ add_action( 'woocommerce_account_my-giftcards_endpoint', function() {
         return;
     }
 
-    // Проверяем права доступа
+
     if ( ! current_user_can( 'read' ) ) {
         echo '<p>' . esc_html__( 'You do not have permission to view gift cards.', 'cgfwc' ) . '</p>';
         return;
@@ -32,7 +32,7 @@ add_action( 'woocommerce_account_my-giftcards_endpoint', function() {
     global $wpdb;
     $meta_table = $wpdb->postmeta;
 
-    // Используем подготовленный запрос с дополнительной валидацией
+
     $giftcards = $wpdb->get_results( $wpdb->prepare(
         "SELECT post_id FROM {$meta_table}
          WHERE meta_key = '_cgfwc_giftcard_owner' 
@@ -69,13 +69,13 @@ add_action( 'woocommerce_account_my-giftcards_endpoint', function() {
         $expiry  = get_post_meta( $gc_id, '_cgfwc_expiry_date',      true );
         $pdf     = get_post_meta( $gc_id, '_cgfwc_pdf_url',          true );
         
-        // берём сохранённое имя продукта, если есть, иначе код
+
         $name    = get_post_meta( $gc_id, '_cgfwc_product_name',     true );
         if ( ! $name ) {
             $name = get_the_title( $gc_id );
         }
 
-        // Определяем статус карты
+
         $balance_float = floatval( $balance );
         $is_expired = $expiry && strtotime( $expiry ) < time();
         
@@ -108,7 +108,7 @@ add_action( 'woocommerce_account_my-giftcards_endpoint', function() {
 
     echo '</tbody></table>';
     
-    // Добавляем стили для статусов карт
+
     echo '<style>
     .giftcard-status {
         padding: 4px 8px;

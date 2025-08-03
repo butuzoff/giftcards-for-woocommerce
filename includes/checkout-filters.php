@@ -2,7 +2,6 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Проверяет, является ли продукт (или его parent, если вариация) Gift Card
  */
 function cgfwc_is_gift_product( $product_id ) {
     $product = wc_get_product( $product_id );
@@ -13,7 +12,6 @@ function cgfwc_is_gift_product( $product_id ) {
 }
 
 /**
- * Содержит ли корзина только Gift Cards?
  */
 function cgfwc_cart_contains_only_giftcards() {
     if ( ! WC()->cart ) {
@@ -32,7 +30,6 @@ function cgfwc_cart_contains_only_giftcards() {
 }
 
 /**
- * 1) Блокируем «микс»
  */
 add_action( 'init', function() {
     add_filter( 'woocommerce_add_to_cart_validation', function( $passed, $product_id ) {
@@ -55,7 +52,6 @@ add_action( 'init', function() {
 });
 
 /**
- * 2) Минимальный набор полей на чекауте для GC
  */
 add_filter( 'woocommerce_checkout_fields', function( $fields ) {
     if ( is_checkout() && cgfwc_cart_contains_only_giftcards() ) {
@@ -71,7 +67,6 @@ add_filter( 'woocommerce_checkout_fields', function( $fields ) {
 }, 20 );
 
 /**
- * 3) Отключаем COD для GC
  */
 add_filter( 'woocommerce_available_payment_gateways', function( $gateways ) {
     if ( cgfwc_cart_contains_only_giftcards() && isset( $gateways['cod'] ) ) {
@@ -81,21 +76,19 @@ add_filter( 'woocommerce_available_payment_gateways', function( $gateways ) {
 }, 20 );
 
 /**
- * 4) Говорим WooCommerce, что доставка нужна, даже если товары виртуальные
  */
 add_filter( 'woocommerce_cart_needs_shipping', function( $needs ) {
     return cgfwc_cart_contains_only_giftcards() ? true : $needs;
 }, 20 );
 
 /**
- * 5) Принудительно выбираем email_delivery и сохраняем его в сессии
  */
 add_action( 'woocommerce_before_checkout_form', function() {
     if ( ! cgfwc_cart_contains_only_giftcards() ) {
         return;
     }
 
-    // Получаем рассчитанные тарифы
+    
     $packages = WC()->shipping()->get_packages();
     $chosen   = [];
 
@@ -114,22 +107,20 @@ add_action( 'woocommerce_before_checkout_form', function() {
 }, 5 );
 
 /**
- * 6) Убираем метод email_delivery, если в корзине есть хоть один обычный товар
- *    и показываем его только когда в корзине исключительно GC
  */
 add_filter( 'woocommerce_package_rates', function( $rates, $package ) {
 
-    // корзина содержит только GC?
+    
     $only_gc = function_exists( 'cgfwc_cart_contains_only_giftcards' )
         ? cgfwc_cart_contains_only_giftcards()
         : false;
 
-    // если только GC — оставляем email_delivery (остальные методы вырезаются выше)
+
     if ( $only_gc ) {
         return $rates;
     }
 
-    // иначе — убираем email_delivery из списка тарифов
+
     foreach ( $rates as $rate_id => $rate ) {
         if ( isset( $rate->method_id ) && 'email_delivery' === $rate->method_id ) {
             unset( $rates[ $rate_id ] );
