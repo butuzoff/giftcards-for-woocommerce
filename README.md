@@ -1,7 +1,6 @@
 # 🎁 Custom Gift Cards for WooCommerce / Подарункові карти для WooCommerce
 
 [![Release](https://img.shields.io/github/v/release/butuzoff/giftcards-for-woocommerce?style=flat-square&logo=github&color=blue)](https://github.com/butuzoff/giftcards-for-woocommerce/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/butuzoff/giftcards-for-woocommerce/release.yml?style=flat-square&logo=github&label=release)](https://github.com/butuzoff/giftcards-for-woocommerce/actions/workflows/release.yml)
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue?style=flat-square&logo=wordpress)](https://wordpress.org/)
 [![WooCommerce](https://img.shields.io/badge/WooCommerce-5.0%2B-purple?style=flat-square&logo=woocommerce)](https://woocommerce.com/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net/)
@@ -240,33 +239,14 @@ WordPress Plugin License: GPL v2 or later
 ## 📊 Project Statistics
 
 [![GitHub stars](https://img.shields.io/github/stars/butuzoff/giftcards-for-woocommerce?style=social)](https://github.com/butuzoff/giftcards-for-woocommerce/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/butuzoff/giftcards-for-woocommerce?style=social)](https://github.com/butuzoff/giftcards-for-woocommerce/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/butuzoff/giftcards-for-woocommerce?style=flat-square)](https://github.com/butuzoff/giftcards-for-woocommerce/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/butuzoff/giftcards-for-woocommerce?style=flat-square)](https://github.com/butuzoff/giftcards-for-woocommerce/pulls)
 [![GitHub downloads](https://img.shields.io/github/downloads/butuzoff/giftcards-for-woocommerce/total?style=flat-square)](https://github.com/butuzoff/giftcards-for-woocommerce/releases)
 [![GitHub last commit](https://img.shields.io/github/last-commit/butuzoff/giftcards-for-woocommerce?style=flat-square)](https://github.com/butuzoff/giftcards-for-woocommerce/commits/main)
 [![GitHub repo size](https://img.shields.io/github/repo-size/butuzoff/giftcards-for-woocommerce?style=flat-square)](https://github.com/butuzoff/giftcards-for-woocommerce)
 
-**Version**: 1.0.9  
-**Last Updated**: 2025  
+
 **Developer**: [Flancer.eu](https://flancer.eu)
 
-## 📋 Changelog
 
-### 1.0.9 (2025-01-XX)
-* **Security Enhancement**: Added comprehensive rate limiting system to prevent brute force attacks
-* **Security Enhancement**: Implemented suspicious activity detection and automatic card blocking
-* **Bug Fix**: Fixed double balance deduction issue in checkout process
-* **Security Enhancement**: Added IP-based temporary blocking for abusive behavior
-* **Security Enhancement**: Enhanced logging for all gift card operations
-* **Security Enhancement**: Added failed attempts tracking per gift card
-* **Code Improvement**: Centralized security functions in dedicated file
-* **Code Improvement**: Removed duplicate functions and improved code organization
-
-### 1.0.8 (2025-01-XX)
-* Enhanced security with comprehensive nonce validation
-* Improved gift card expiration management
-* Added race condition protection for balance deductions
-* Mobile-responsive design improvements
-* Detailed operation logging
-* WooCommerce 5.0+ compatibility improvements 
+* WooCommerce
