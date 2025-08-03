@@ -108,7 +108,7 @@ class CGFWC_GitHub_Updater {
             return false;
         }
         
-        set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
+        set_transient( $cache_key, $data, 2 * HOUR_IN_SECONDS );
         
         return $data;
     }

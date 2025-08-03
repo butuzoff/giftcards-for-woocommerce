@@ -238,6 +238,10 @@ WordPress Plugin License: GPL v2 or later
 
 ## 📋 Changelog
 
+### 1.0.11-test (2025-01-XX)
+* **Testing**: Reduced update check cache from 12 hours to 2 hours for faster update detection
+* **Testing**: This is a test release to verify the update notification system
+
 ### 1.0.10 (2025-01-XX)
 * **Critical Bug Fix**: Fixed Fatal Error in gift card generation caused by misplaced code execution
 * **Code Improvement**: Removed all Russian language comments for better international compatibility  
