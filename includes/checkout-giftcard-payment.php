@@ -22,6 +22,12 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
         return;
     }
 
+    // Проверяем, не обрабатывались ли уже подарочные карты для этого заказа
+    $giftcards_processed = get_post_meta( $order_id, '_giftcards_processed', true );
+    if ( $giftcards_processed ) {
+        return; // Уже обработано
+    }
+
     // Получаем данные о примененной карте из сессии
     $applied_code = WC()->session->get( 'giftcard_code', '' );
     $applied_amount = WC()->session->get( 'giftcard_amount', 0 );
@@ -165,6 +171,9 @@ add_action( 'woocommerce_thankyou', function( $order_id ) {
                 'order_id' => $order_id
             ] );
         }
+
+        // Отмечаем, что подарочные карты для этого заказа были обработаны
+        update_post_meta( $order_id, '_giftcards_processed', 'yes' );
     }
 
     // Очищаем сессию, чтобы не списалось дважды

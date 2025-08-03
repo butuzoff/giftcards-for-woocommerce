@@ -65,23 +65,7 @@ function cgfwc_get_gift_card_by_code( $code ) {
     return $posts ? $posts[0] : null;
 }
 
-/**
- * Получает IP адрес пользователя для логирования
- */
-function cgfwc_get_user_ip() {
-    $ip_keys = array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' );
-    foreach ( $ip_keys as $key ) {
-        if ( array_key_exists( $key, $_SERVER ) === true ) {
-            foreach ( explode( ',', $_SERVER[ $key ] ) as $ip ) {
-                $ip = trim( $ip );
-                if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
-                    return $ip;
-                }
-            }
-        }
-    }
-    return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
-}
+
 
 /**
  * Проверяет статус подарочной карты с улучшенной валидацией
@@ -110,6 +94,16 @@ function cgfwc_get_gift_card_status( $card_post ) {
             'valid' => false, 
             'message' => __( 'This gift card has been fully used.', 'cgfwc' ),
             'status' => 'used',
+            'balance' => $balance
+        ];
+    }
+
+    // Проверяем, не заблокирована ли карта
+    if ( $status === 'blocked' ) {
+        return [ 
+            'valid' => false, 
+            'message' => __( 'This gift card has been blocked for security reasons.', 'cgfwc' ),
+            'status' => 'blocked',
             'balance' => $balance
         ];
     }
@@ -278,6 +272,18 @@ function cgfwc_apply_gift_card() {
         return;
     }
 
+    // Проверяем rate limiting
+    if ( ! cgfwc_check_rate_limit() ) {
+        wc_add_notice( __( 'Too many attempts. Please try again later.', 'cgfwc' ), 'error' );
+        return;
+    }
+
+    // Проверяем временную блокировку IP
+    if ( ! cgfwc_check_temporary_block() ) {
+        wc_add_notice( __( 'Your IP is temporarily blocked due to suspicious activity.', 'cgfwc' ), 'error' );
+        return;
+    }
+
     // Забираем и валидируем введенные данные
     $code = isset( $_POST['giftcard_code'] ) ? sanitize_text_field( trim( $_POST['giftcard_code'] ) ) : '';
     $amount_raw = isset( $_POST['giftcard_amount'] ) ? $_POST['giftcard_amount'] : '';
@@ -331,13 +337,21 @@ function cgfwc_apply_gift_card() {
     // Получаем карту из базы данных с дополнительной проверкой
     $card_post = cgfwc_get_gift_card_by_code( $code );
     if ( ! $card_post ) {
+        cgfwc_increment_failed_attempts( $code );
         wc_add_notice( __( 'Gift card not found.', 'cgfwc' ), 'error' );
+        return;
+    }
+
+    // Проверяем подозрительную активность
+    if ( ! cgfwc_detect_suspicious_activity( $code ) ) {
+        wc_add_notice( __( 'This gift card has been blocked for security reasons.', 'cgfwc' ), 'error' );
         return;
     }
 
     // Проверяем статус карты с улучшенной валидацией
     $card_status = cgfwc_get_gift_card_status( $card_post );
     if ( ! $card_status['valid'] ) {
+        cgfwc_increment_failed_attempts( $code );
         wc_add_notice( $card_status['message'], 'error' );
         return;
     }
@@ -366,6 +380,9 @@ function cgfwc_apply_gift_card() {
     // Всё ок — сохраняем в сессии и пересчитываем
     WC()->session->set( 'giftcard_code', strtoupper( $code ) );
     WC()->session->set( 'giftcard_amount', $amount );
+    
+    // Сбрасываем счетчик неудачных попыток при успешном применении
+    cgfwc_reset_failed_attempts( $code );
     
     // Логируем операцию с дополнительной информацией
     $logger = wc_get_logger();
