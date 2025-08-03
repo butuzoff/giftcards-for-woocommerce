@@ -3,7 +3,6 @@
 .github export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
-.cursor export-ignore
 .vscode export-ignore
 .idea export-ignore
 README.md export-ignore

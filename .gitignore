@@ -12,7 +12,6 @@ Thumbs.db
 # IDE и редакторы
 .vscode/
 .idea/
-.cursor/
 *.swp
 *.swo
 *~
@@ -108,11 +107,6 @@ logs/
 local-config.php
 wp-config-local.php
 
-# Инструкции по релизам (служебные файлы)
-RELEASE_SYSTEM.md
-RELEASE_QUICK.md
-RELEASE_TEMPLATES.md
-RELEASE_README.md
 
 # Исключаем локальные файлы разработки
 *.local
