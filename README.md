@@ -15,18 +15,17 @@
 
 ## English
 
-**Custom Gift Cards for WooCommerce** is a comprehensive plugin for creating, managing, and tracking gift cards in WooCommerce. It allows you to create customizable gift card products, automatically generate PDF certificates, and track balances with full integration into the WooCommerce ecosystem.
+**Custom Gift Cards for WooCommerce** is a comprehensive plugin for creating, managing, and tracking gift cards in WooCommerce. It allows you to create customizable gift card products, track balances with full integration into the WooCommerce ecosystem, and provides secure gift card redemption.
 
 ### 📋 Features
 
 - ✅ **Gift Card Creation** - Customizable products with various denominations
-- ✅ **Automatic PDF Generation** - Beautiful certificates for download
 - ✅ **Balance Tracking** - In user account dashboard
 - ✅ **Partial Usage** - Use gift cards across multiple purchases
 - ✅ **Security** - Expiration date validation, data validation, nonce protection
 - ✅ **Responsive Design** - Works on all devices
 - ✅ **WooCommerce Integration** - Full compatibility with cart and checkout
-- ✅ **Email Notifications** - Automatic certificate delivery
+- ✅ **Email Notifications** - Automatic delivery notifications
 - ✅ **GitHub Updates** - Automatic plugin updates
 
 ### 🛠️ Technology Stack
@@ -55,7 +54,7 @@
 
 #### 1. Creating Gift Card Products
 1. Go to **Products → Add New**
-2. Set product type to **"Gift Card"**
+2. Set product type to **"Gift Card"** (checkbox option)
 3. Fill in basic fields:
    - Product name
    - Description
@@ -64,27 +63,25 @@
 4. In gift card settings specify:
    - Card denomination
    - Expiration period (days)
-   - PDF certificate design
 
 #### 2. Email Notifications
-The plugin automatically sends emails with PDF certificates after payment.
+The plugin automatically sends email notifications after payment.
 
 #### 3. User Account Setup
-Users can view their cards in **My Account → Gift Cards**
+Users can view their cards in **My Account → My Gift Cards**
 
 ### 📖 Usage
 
 #### For Customers
 1. Add gift card to cart
 2. Complete checkout as usual
-3. Receive email with PDF certificate after payment
+3. Receive email notification after payment
 4. Use card for future purchases
 
 #### For Administrators
-- View all cards: **Products → Gift Cards**
-- Manage card balances
-- Export data
-- Configure certificate designs
+- Manage gift card balances through WooCommerce orders
+- Track gift card usage in order details
+- Configure email delivery settings
 
 ### 🔧 Technical Requirements
 
@@ -108,7 +105,15 @@ Users can view their cards in **My Account → Gift Cards**
 
 ### 📝 License
 
-Exclusive rights belong to [Flancer.eu](https://flancer.eu). 
+This plugin is licensed under the [GPL v2 or later](https://www.gnu.org/licenses/gpl-2.0.html).
+
+```
+WordPress Plugin License: GPL v2 or later
+```
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. 
 
 ### 🆘 Support
 
@@ -120,18 +125,17 @@ Exclusive rights belong to [Flancer.eu](https://flancer.eu).
 
 ## Українська
 
-**Подарункові карти для WooCommerce** — це комплексний плагін для створення, управління та відстеження подарункових карт у WooCommerce. Дозволяє створювати налаштовувані товари подарункових карт, автоматично генерувати PDF-сертифікати та відстежувати баланси з повною інтеграцією в екосистему WooCommerce.
+**Подарункові карти для WooCommerce** — це комплексний плагін для створення, управління та відстеження подарункових карт у WooCommerce. Дозволяє створювати налаштовувані товари подарункових карт, відстежувати баланси з повною інтеграцією в екосистему WooCommerce та забезпечує безпечне використання подарункових карт.
 
 ### 📋 Можливості
 
 - ✅ **Створення подарункових карт** - Налаштовувані товари з різними номіналами
-- ✅ **Автоматична генерація PDF** - Красиві сертифікати для завантаження
 - ✅ **Відстеження балансу** - В особистому кабінеті користувача
 - ✅ **Часткове використання** - Можливість використовувати карту на кілька покупок
 - ✅ **Безпека** - Перевірка терміну дії, валідація даних, захист nonce
 - ✅ **Адаптивний дизайн** - Працює на всіх пристроях
 - ✅ **Інтеграція з WooCommerce** - Повна сумісність з кошиком та оформленням
-- ✅ **Email сповіщення** - Автоматична доставка сертифікатів
+- ✅ **Email сповіщення** - Автоматичні сповіщення про доставку
 - ✅ **GitHub оновлення** - Автоматичні оновлення плагіна
 
 ### 🛠️ Стек технологій
@@ -160,7 +164,7 @@ Exclusive rights belong to [Flancer.eu](https://flancer.eu).
 
 #### 1. Створення товарів подарункових карт
 1. Перейдіть до **Товари → Додати новий**
-2. Встановіть тип товару **"Подарункова карта"**
+2. Встановіть тип товару **"Подарункова карта"** (опція чекбокс)
 3. Заповніть основні поля:
    - Назва товару
    - Опис
@@ -169,27 +173,25 @@ Exclusive rights belong to [Flancer.eu](https://flancer.eu).
 4. В налаштуваннях подарункової карти вкажіть:
    - Номінал карти
    - Термін дії (днів)
-   - Дизайн PDF-сертифіката
 
 #### 2. Email сповіщення
-Плагін автоматично відправляє email з PDF-сертифікатом після оплати.
+Плагін автоматично відправляє email сповіщення після оплати.
 
 #### 3. Налаштування особистого кабінету
-Користувачі можуть переглядати свої карти в **Мій обліковий запис → Подарункові карти**
+Користувачі можуть переглядати свої карти в **Мій обліковий запис → Мої подарункові карти**
 
 ### 📖 Використання
 
 #### Для покупців
 1. Додайте подарункову карту в кошик
 2. Оформіть замовлення як зазвичай
-3. Отримайте email з PDF-сертифікатом після оплати
+3. Отримайте email сповіщення після оплати
 4. Використовуйте карту для майбутніх покупок
 
 #### Для адміністраторів
-- Перегляд всіх карт: **Товари → Подарункові карти**
-- Управління балансами карт
-- Експорт даних
-- Налаштування дизайну сертифікатів
+- Управління балансами подарункових карт через замовлення WooCommerce
+- Відстеження використання карт в деталях замовлення
+- Налаштування параметрів email доставки
 
 ### 🔧 Технічні вимоги
 
@@ -213,7 +215,15 @@ Exclusive rights belong to [Flancer.eu](https://flancer.eu).
 
 ### 📝 Ліцензія
 
-Виключні права належать [Flancer.eu](https://flancer.eu).
+Цей плагін ліцензований під [GPL v2 або пізніше](https://www.gnu.org/licenses/gpl-2.0.html).
+
+```
+WordPress Plugin License: GPL v2 or later
+```
+
+Ця програма є вільним програмним забезпеченням; ви можете поширювати та/або модифікувати її відповідно до умов GNU General Public License, опублікованої Free Software Foundation; або версії 2 Ліцензії, або (на ваш вибір) будь-якої пізнішої версії.
+
+Ця програма поширюється в надії, що вона буде корисною, але БЕЗ БУДЬ-ЯКИХ ГАРАНТІЙ; навіть без неявної гарантії КОМЕРЦІЙНОЇ ПРИДАТНОСТІ або ПРИДАТНОСТІ ДЛЯ КОНКРЕТНОЇ МЕТИ. Дивіться GNU General Public License для отримання додаткової інформації.
 
 ### 🆘 Підтримка
 
