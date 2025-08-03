@@ -21,7 +21,7 @@ jobs:
       - name: Validate plugin files
         run: |
           echo "Validating plugin structure..."
-          if [ ! -f "giftcards-for-woocommerce/custom-giftcards-for-woocommerce.php" ]; then
+          if [ ! -f "custom-giftcards-for-woocommerce.php" ]; then
             echo "❌ Main plugin file not found!"
             exit 1
           fi
@@ -30,19 +30,21 @@ jobs:
       - name: Extract version from plugin header
         id: version
         run: |
-          VERSION=$(grep "Version:" giftcards-for-woocommerce/custom-giftcards-for-woocommerce.php | sed 's/.*Version: //' | tr -d ' ')
+          VERSION=$(grep "Version:" custom-giftcards-for-woocommerce.php | sed 's/.*Version: //' | tr -d ' ')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "📦 Plugin version: $VERSION"
           
       - name: Create plugin archive
         run: |
-          # Создаем временную папку для правильной структуры
-          mkdir -p temp-release
+          # Создаем временную папку с правильным именем плагина
+          mkdir -p temp-release/giftcards-for-woocommerce
           
-          # Копируем только файлы плагина
-          cp -r giftcards-for-woocommerce/* temp-release/
+          # Копируем файлы плагина в правильную структуру
+          cp custom-giftcards-for-woocommerce.php temp-release/giftcards-for-woocommerce/
+          cp readme.txt temp-release/giftcards-for-woocommerce/
+          cp -r includes/ temp-release/giftcards-for-woocommerce/
           
-          # Создаем архив из временной папки
+          # Создаем архив с правильной структурой для WordPress
           cd temp-release
           zip -r "../giftcards-for-woocommerce-${{ steps.version.outputs.version }}.zip" . \
             -x "*.git*" \
@@ -52,7 +54,10 @@ jobs:
             -x "vendor/*" \
             -x ".vscode/*" \
             -x ".idea/*" \
-            -x ".cursor/*"
+            -x ".cursor/*" \
+            -x "README.md" \
+            -x "RELEASE_*" \
+            -x ".github/*"
           
           # Очищаем временную папку
           cd ..
@@ -73,43 +78,43 @@ jobs:
           body: |
             ## 🎁 WooCommerce Gift Cards Plugin v${{ steps.version.outputs.version }}
             
-            ### 📋 Что нового в этой версии:
+            ### 📋 What's New in This Version:
             
-            **🔒 Улучшения безопасности:**
-            - Добавлены nonce проверки во все формы
-            - Реализована проверка срока действия карт
-            - Добавлена валидация входных данных
-            - Исправлены race conditions при списании средств
+            **🔒 Security Enhancements:**
+            - Added nonce validation to all forms
+            - Implemented gift card expiration checks
+            - Enhanced input data validation
+            - Fixed race conditions in balance deductions
             
-            **🎯 Новые возможности:**
-            - Поддержка частичного использования средств на карте
-            - Улучшенный интерфейс с индикаторами статуса
-            - Адаптивный дизайн для мобильных устройств
-            - Детальное логирование операций
+            **🎯 New Features:**
+            - Support for partial gift card usage
+            - Improved interface with status indicators
+            - Mobile-responsive design
+            - Detailed operation logging
             
-            **🐛 Исправления:**
-            - Улучшена совместимость с WooCommerce 5.0+
-            - Оптимизирована производительность
-            - Исправлены мелкие ошибки интерфейса
+            **🐛 Bug Fixes:**
+            - Enhanced WooCommerce 5.0+ compatibility
+            - Performance optimizations
+            - Minor interface improvements
             
-            ### 📦 Установка:
-            1. Скачайте архив
-            2. Загрузите в `/wp-content/plugins/`
-            3. Активируйте плагин
-            4. Настройте товары подарочных карт
+            ### 📦 Installation:
+            1. Download the archive
+            2. Upload to `/wp-content/plugins/`
+            3. Activate the plugin
+            4. Configure gift card products
             
-            ### 🔗 Ссылки:
-            - [Документация](https://github.com/butuzoff/giftcards-for-woocommerce)
-            - [Поддержка](https://flancer.eu)
-            - [Сайт](https://lecharmie.com)
+            ### 🔗 Links:
+            - [Documentation](https://github.com/butuzoff/giftcards-for-woocommerce)
+            - [Support](https://flancer.eu)
+            - [Website](https://lecharmie.com)
             
-            ### 📝 Требования:
+            ### 📝 Requirements:
             - WordPress 5.0+
             - WooCommerce 5.0+
             - PHP 7.4+
             
             ---
-            **Разработано [Flancer.eu](https://flancer.eu) специально для [LeCharmie.com](https://lecharmie.com)**
+            **Developed by [Flancer.eu](https://flancer.eu) specifically for [LeCharmie.com](https://lecharmie.com)**
           draft: false
           prerelease: false
           

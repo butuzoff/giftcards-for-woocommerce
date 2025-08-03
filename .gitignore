@@ -26,7 +26,7 @@ Thumbs.db
 *.log
 *.cache
 
-# WordPress специфичные файлы
+# WordPress специфичные файлы (общие)
 wp-config.php
 wp-content/uploads/
 wp-content/cache/
@@ -34,14 +34,12 @@ wp-content/backup-db/
 wp-content/backups/
 wp-content/blogs.dir/
 wp-content/upgrade/
-wp-content/uploads/
-wp-content/mu-plugins/
 wp-content/wp-cache-config.php
 wp-content/plugins/hello.php
 
-# WooCommerce специфичные файлы
-wp-content/uploads/woocommerce_uploads/
-wp-content/uploads/wc-logs/
+# WooCommerce специфичные файлы (общие)  
+woocommerce_uploads/
+wc-logs/
 
 # Логи плагина
 *.log
@@ -93,33 +91,24 @@ wp-config-local.php
 *.old
 
 # Временные файлы плагина
-giftcards-for-woocommerce/temp/
-giftcards-for-woocommerce/cache/
-giftcards-for-woocommerce/logs/
+temp/
+cache/
+logs/
 
 # Файлы разработки
 *.dev.php
 *.test.php
 *.debug.php
 
-# Документация (опционально)
-docs/_build/
-docs/.doctrees/
-
-# Файлы переводов (опционально, если не хотите коммитить переводы)
+# Файлы переводов (временные)
 *.po~
 *.mo~
 
-# Файлы безопасности
-.htaccess
-robots.txt
+# Файлы специфичные для проекта (локальные копии разработки)
+local-config.php
+wp-config-local.php
 
-# Файлы специфичные для проекта (локальные копии)
-giftcards-for-woocommerce/README.md
-giftcards-for-woocommerce/CHANGELOG.md
-giftcards-for-woocommerce/LICENSE
-
-# Инструкции по релизам (локальные копии)
+# Инструкции по релизам (служебные файлы)
 RELEASE_SYSTEM.md
 RELEASE_QUICK.md
 RELEASE_TEMPLATES.md
@@ -127,18 +116,4 @@ RELEASE_README.md
 
 # Исключаем локальные файлы разработки
 *.local
-*.dev
-
-# Исключения для WordPress плагинов
-!wp-content/plugins/giftcards-for-woocommerce/
-!wp-content/themes/
-!wp-content/mu-plugins/
-
-# Файлы, которые должны быть в репозитории
-!wp-content/plugins/giftcards-for-woocommerce/readme.txt
-!wp-content/plugins/giftcards-for-woocommerce/custom-giftcards-for-woocommerce.php
-
-# GitHub Actions должны быть в репозитории
-!.github/
-!.github/workflows/
-!.github/workflows/*.yml 
+*.dev 
