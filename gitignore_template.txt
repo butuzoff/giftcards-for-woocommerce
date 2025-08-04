@@ -1,0 +1,89 @@
+# Универсальный шаблон .gitignore
+# Использует оптимизированную логику с игнорированием всех скрытых файлов и исключениями
+
+# Системные файлы
+ehthumbs.db
+Thumbs.db
+
+# Временные файлы
+*.tmp
+*.temp
+*.log
+*.cache
+
+# IDE и редакторы
+*.swp
+*.swo
+*~
+
+# Зависимости
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# PHP/Composer
+vendor/
+composer.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Сборка и дистрибутивы
+build/
+dist/
+*.zip
+*.tar.gz
+
+# Локальные настройки
+*.local
+*.dev
+local-config.*
+
+# Резервные копии
+*.bak
+*.backup
+*.old
+
+# Логи
+logs/
+*.log
+
+# База данных
+*.sql
+*.sqlite
+*.db
+
+# Скрытые файлы и директории
+# Игнорировать все скрытые файлы и директории
+.*
+
+# Разрешить только указанные скрытые файлы и директории
+!.github/
+!.gitignore
+!.gitattributes
+# !.editorconfig  # Раскомментировать при необходимости
+# !.eslintrc.js   # Раскомментировать при необходимости
+# !.prettierrc    # Раскомментировать при необходимости

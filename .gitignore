@@ -1,23 +1,13 @@
 # WordPress плагин WooCommerce Gift Cards - .gitignore
 
 # Системные файлы
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
 ehthumbs.db
 Thumbs.db
 
 # IDE и редакторы
-.vscode/
-.idea/
 *.swp
 *.swo
 *~
-.project
-.settings/
-.classpath
 
 # Временные файлы
 *.tmp
@@ -52,10 +42,6 @@ debug.log
 
 # Конфигурационные файлы
 config.php
-.env
-.env.local
-.env.production
-.env.staging
 
 # Зависимости (если используется Composer)
 vendor/
@@ -78,7 +64,6 @@ dist/
 # Тестирование
 phpunit.xml
 tests/coverage/
-.phpunit.result.cache
 
 # Локальные настройки
 local-config.php
@@ -103,11 +88,15 @@ logs/
 *.po~
 *.mo~
 
-# Файлы специфичные для проекта (локальные копии разработки)
-local-config.php
-wp-config-local.php
-
-
 # Исключаем локальные файлы разработки
 *.local
-*.dev 
+*.dev
+
+# Скрытые файлы и директории
+# Игнорировать все скрытые файлы и директории
+.*
+
+# Разрешить только указанные скрытые файлы и директории
+!.github/
+!.gitignore
+!.gitattributes
