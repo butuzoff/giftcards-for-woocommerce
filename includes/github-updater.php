@@ -1,28 +1,14 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-/**
- */
 class CGFWC_GitHub_Updater {
-    
-    /**
-     */
+  
     private $github_repo = 'butuzoff/giftcards-for-woocommerce';
-    
-    /**
-     */
     private $plugin_file;
-    
-    /**
-     */
     private $plugin_slug;
-    
-    /**
-     */
     private $current_version;
     
-    /**
-     */
+    // Constructor
     public function __construct( $plugin_file ) {
         $this->plugin_file = $plugin_file;
         $this->plugin_slug = plugin_basename( $plugin_file );
@@ -37,8 +23,7 @@ class CGFWC_GitHub_Updater {
         add_action( 'admin_notices', array( $this, 'admin_notices' ) );
     }
     
-    /**
-     */
+ // Check for updates
     public function check_github_update( $transient ) {
         if ( empty( $transient->checked ) ) {
             return $transient;
@@ -46,10 +31,12 @@ class CGFWC_GitHub_Updater {
         
         $github_info = $this->get_github_release_info();
         
-        if ( $github_info && version_compare( $this->current_version, $github_info->tag_name, '<' ) ) {
+        // Очищаем версию от префикса 'v' для корректного сравнения
+        $github_version = ltrim($github_info->tag_name, 'v');
+        if ( $github_info && version_compare( $this->current_version, $github_version, '<' ) ) {
             $transient->response[ $this->plugin_slug ] = (object) array(
                 'slug' => dirname( $this->plugin_slug ),
-                'new_version' => $github_info->tag_name,
+                'new_version' => $github_version,
                 'url' => $github_info->html_url,
                 'package' => $github_info->zipball_url,
                 'requires' => '5.0',
@@ -69,8 +56,7 @@ class CGFWC_GitHub_Updater {
         return $transient;
     }
     
-    /**
-     */
+   // Get the latest release info from GitHub
     private function get_github_release_info() {
         $cache_key = 'cgfwc_github_latest';
         $cached = get_transient( $cache_key );
@@ -113,8 +99,7 @@ class CGFWC_GitHub_Updater {
         return $data;
     }
     
-    /**
-     */
+   // Get the plugin info from GitHub
     public function plugin_info( $result, $action, $args ) {
         if ( $action !== 'plugin_information' ) {
             return $result;
@@ -130,7 +115,7 @@ class CGFWC_GitHub_Updater {
             return (object) array(
                 'name' => 'Custom Giftcards for WooCommerce',
                 'slug' => dirname( $this->plugin_slug ),
-                'version' => $github_info->tag_name,
+                'version' => ltrim($github_info->tag_name, 'v'),
                 'author' => 'FLANCER.EU',
                 'author_profile' => 'https://flancer.eu',
                 'last_updated' => $github_info->published_at,
@@ -149,8 +134,7 @@ class CGFWC_GitHub_Updater {
         return $result;
     }
     
-    /**
-     */
+  // Fix the GitHub source
     public function fix_github_source( $source, $remote_url, $upgrader, $hook_extra ) {
         if ( strpos( $remote_url, 'github.com' ) !== false ) {
             $plugin_dir = dirname( $this->plugin_slug );
@@ -169,8 +153,7 @@ class CGFWC_GitHub_Updater {
         return $source;
     }
     
-    /**
-     */
+  // After update
     public function after_update( $upgrader, $hook_extra ) {
         if ( $hook_extra['action'] === 'update' && $hook_extra['type'] === 'plugin' ) {
             if ( isset( $hook_extra['plugins'] ) && in_array( $this->plugin_slug, $hook_extra['plugins'] ) ) {
@@ -194,8 +177,7 @@ class CGFWC_GitHub_Updater {
         }
     }
     
-    /**
-     */
+  // Plugin row meta
     public function plugin_row_meta( $links, $file ) {
         if ( $file === $this->plugin_slug ) {
             $links[] = '<a href="' . esc_url( "https://github.com/{$this->github_repo}" ) . '" target="_blank">GitHub</a>';
@@ -205,8 +187,7 @@ class CGFWC_GitHub_Updater {
         return $links;
     }
     
-    /**
-     */
+  // Admin notices
     public function admin_notices() {
         if ( ! current_user_can( 'update_plugins' ) ) {
             return;
@@ -214,24 +195,24 @@ class CGFWC_GitHub_Updater {
         
         $github_info = $this->get_github_release_info();
         
-        if ( $github_info && version_compare( $this->current_version, $github_info->tag_name, '<' ) ) {
+        // Очищаем версию от префикса 'v' для корректного сравнения
+        $github_version = ltrim($github_info->tag_name, 'v');
+        if ( $github_info && version_compare( $this->current_version, $github_version, '<' ) ) {
             echo '<div class="notice notice-warning is-dismissible">';
             echo '<p><strong>Gift Cards Plugin Update Available!</strong></p>';
-            echo '<p>Version ' . esc_html( $github_info->tag_name ) . ' is available. ';
+            echo '<p>Version ' . esc_html( $github_version ) . ' is available. ';
             echo '<a href="' . admin_url( 'plugins.php' ) . '">Update now</a> or ';
             echo '<a href="' . esc_url( $github_info->html_url ) . '" target="_blank">view on GitHub</a>.</p>';
             echo '</div>';
         }
     }
     
-    /**
-     */
+   // Get the plugin description
     private function get_plugin_description() {
         return 'A comprehensive WooCommerce plugin for managing gift cards with partial usage support, email delivery, and advanced security features.';
     }
     
-    /**
-     */
+  // Format the changelog
     private function format_changelog( $body ) {
         if ( empty( $body ) ) {
             return 'No changelog available.';
@@ -244,8 +225,7 @@ class CGFWC_GitHub_Updater {
         return $changelog;
     }
     
-    /**
-     */
+  // Get the installation instructions
     private function get_installation_instructions() {
         return '
         <ol>
@@ -257,8 +237,7 @@ class CGFWC_GitHub_Updater {
         ';
     }
     
-    /**
-     */
+  // Log the update check
     private function log_update_check( $github_info ) {
         $logger = wc_get_logger();
         $logger->info( "GitHub update check performed", [
@@ -270,8 +249,7 @@ class CGFWC_GitHub_Updater {
         ] );
     }
     
-    /**
-     */
+  // Log the error
     private function log_error( $message ) {
         $logger = wc_get_logger();
         $logger->error( $message, [
@@ -281,12 +259,24 @@ class CGFWC_GitHub_Updater {
     }
 }
 
-/**
- */
+    // Initialize the GitHub updater
 function cgfwc_init_github_updater() {
     if ( ! class_exists( 'CGFWC_GitHub_Updater' ) ) {
         new CGFWC_GitHub_Updater( CGFWC_PLUGIN_DIR . 'custom-giftcards-for-woocommerce.php' );
     }
+    
+    // Принудительная очистка кэша при каждом запросе в админке (временное решение)
+    if (is_admin() && current_user_can('update_plugins')) {
+        delete_transient('cgfwc_github_latest');
+    }
 }
 
-add_action( 'plugins_loaded', 'cgfwc_init_github_updater', 20 ); 
+// Более высокий приоритет для гарантированной загрузки после других плагинов
+add_action( 'plugins_loaded', 'cgfwc_init_github_updater', 20 );
+
+// Добавляем дополнительный хук для проверки обновлений при загрузке админки
+add_action( 'admin_init', function() {
+    if (current_user_can('update_plugins')) {
+        delete_site_transient('update_plugins');
+    }
+}, 20); 
