@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Нужен для получения истории коммитов
         
       - name: Get version
         id: version
@@ -31,24 +33,43 @@ jobs:
           
           cd build
           zip -r "../giftcards-for-woocommerce-${{ steps.version.outputs.VERSION }}.zip" giftcards-for-woocommerce
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Получаем предыдущий тег
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          # Генерируем changelog из коммитов
+          if [ -n "$PREV_TAG" ]; then
+            echo "Generating changelog from $PREV_TAG to HEAD"
+            CHANGELOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s" --no-merges)
+          else
+            echo "No previous tag found, using initial release"
+            CHANGELOG="- Initial release"
+          fi
+          
+          # Создаем полный changelog
+          cat > CHANGELOG.md << EOF
+          ## Gift Cards Plugin v${{ steps.version.outputs.VERSION }}
+          
+          **Changes:**
+          ${CHANGELOG}
+          
+          **Requirements:** WordPress 5.0+, WooCommerce 5.0+, PHP 7.4+
+          EOF
+          
+          # Сохраняем changelog для использования в следующем шаге
+          {
+            echo 'changelog<<EOF'
+            cat CHANGELOG.md
+            echo EOF
+          } >> $GITHUB_OUTPUT
           
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           files: giftcards-for-woocommerce-${{ steps.version.outputs.VERSION }}.zip
           name: v${{ steps.version.outputs.VERSION }}
-          body: |
-            ## Gift Cards Plugin v${{ steps.version.outputs.VERSION }}
-            
-            **Critical Bug Fixes:**
-            - Fixed GitHub updater system not displaying update notifications
-            - Added proper validation for GitHub API responses
-            - Fixed version comparison logic to handle 'v' prefix correctly
-            - Improved error handling in update check methods
-            
-            **Improvements:**
-            - Added debug information for troubleshooting updates (when WP_DEBUG enabled)
-            - Enhanced initialization process for update system
-            - Better logging for update checks
-            
-            **Requirements:** WordPress 5.0+, WooCommerce 5.0+, PHP 7.4+
+          body: ${{ steps.changelog.outputs.changelog }}
+          generate_release_notes: true
