@@ -173,28 +173,27 @@ add_action( 'woocommerce_cart_coupon', function() {
     <tr class="coupon giftcard-coupon">
         <td colspan="6" class="actions">
             <form method="post" class="woocommerce-giftcard">
+                <h3><?php esc_html_e( 'Подарочная карта', 'cgfwc' ); ?></h3>
                 <div class="coupon">
-                    <label for="giftcard_code"><?php esc_html_e( 'Gift card code:', 'cgfwc' ); ?></label>
                     <input type="text" name="giftcard_code" class="input-text" id="giftcard_code"
                            value="<?php echo esc_attr( $applied_code ); ?>"
-                           placeholder="<?php esc_attr_e( 'Gift card code', 'cgfwc' ); ?>"
+                           placeholder="<?php esc_attr_e( 'Код подарочной карты', 'cgfwc' ); ?>"
                            <?php echo $applied_code ? 'readonly' : ''; ?>>
                     
                     <?php if ( ! $applied_code ) : ?>
-                        <label for="giftcard_amount"><?php esc_html_e( 'Amount:', 'cgfwc' ); ?></label>
                         <input type="number" name="giftcard_amount" class="input-text" id="giftcard_amount"
                                value="<?php echo esc_attr( $applied_amount ); ?>"
-                               placeholder="<?php esc_attr_e( 'Amount to use', 'cgfwc' ); ?>"
+                               placeholder="<?php esc_attr_e( 'Сумма к использованию', 'cgfwc' ); ?>"
                                step="0.01" min="0" max="<?php echo $card_info ? esc_attr( $card_info['balance'] ) : ''; ?>">
                     <?php endif; ?>
                     
                     <?php if ( $applied_code ) : ?>
                         <button type="submit" class="button" name="remove_giftcard" value="1">
-                            <?php esc_html_e( 'Remove gift card', 'cgfwc' ); ?>
+                            <?php esc_html_e( 'Убрать подарочную карту', 'cgfwc' ); ?>
                         </button>
                     <?php else : ?>
                         <button type="submit" class="button" name="apply_giftcard" value="1">
-                            <?php esc_html_e( 'Apply gift card', 'cgfwc' ); ?>
+                            <?php esc_html_e( 'Применить подарочную карту', 'cgfwc' ); ?>
                         </button>
                     <?php endif; ?>
                     
@@ -204,7 +203,7 @@ add_action( 'woocommerce_cart_coupon', function() {
                         <div class="giftcard-info">
                             <?php 
                             printf(
-                                esc_html__( 'Used: %s | Remaining: %s', 'cgfwc' ),
+                                esc_html__( 'Использовано: %s | Остаток: %s', 'cgfwc' ),
                                 wc_price( $card_info['used'] ),
                                 wc_price( $card_info['remaining'] )
                             ); 
@@ -392,16 +391,18 @@ add_action( 'wp_head', function() {
     if ( is_cart() ) {
         ?>
         <style>
+        .giftcard-coupon h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
         .giftcard-coupon .coupon {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
-        }
-        
-        .giftcard-coupon .coupon label {
-            margin-right: 5px;
-            font-weight: normal;
         }
         
         .giftcard-coupon .coupon input[type="text"],
