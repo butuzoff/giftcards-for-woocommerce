@@ -173,32 +173,32 @@ add_action( 'woocommerce_cart_coupon', function() {
     <tr class="coupon giftcard-coupon">
         <td colspan="6" class="actions">
                          <div class="woocommerce-giftcard">
-                 <h3><?php esc_html_e( 'Подарочная карта', 'cgfwc' ); ?></h3>
+                 <h3><?php esc_html_e( 'Gift Card', 'cgfwc' ); ?></h3>
                  
                  <div class="giftcard-messages" style="display: none;"></div>
                  
                  <div class="coupon">
                     <input type="text" name="giftcard_code" class="input-text" id="giftcard_code"
                            value="<?php echo esc_attr( $applied_code ); ?>"
-                           placeholder="<?php esc_attr_e( 'Код подарочной карты', 'cgfwc' ); ?>"
+                           placeholder="<?php esc_attr_e( 'Gift Card Code', 'cgfwc' ); ?>"
                            <?php echo $applied_code ? 'readonly' : ''; ?>>
                     
                     <?php if ( ! $applied_code ) : ?>
                         <input type="number" name="giftcard_amount" class="input-text" id="giftcard_amount"
                                value="<?php echo esc_attr( $applied_amount ); ?>"
-                               placeholder="<?php esc_attr_e( 'Сумма к использованию', 'cgfwc' ); ?>"
+                               placeholder="<?php esc_attr_e( 'Amount to use', 'cgfwc' ); ?>"
                                step="0.01" min="0" max="<?php echo $card_info ? esc_attr( $card_info['balance'] ) : ''; ?>">
                     <?php endif; ?>
                     
                     <?php if ( $applied_code ) : ?>
                         <button type="button" class="button cgfwc-remove-btn" data-action="remove">
-                            <span class="btn-text"><?php esc_html_e( 'Убрать подарочную карту', 'cgfwc' ); ?></span>
-                            <span class="btn-loading" style="display: none;"><?php esc_html_e( 'Убираем...', 'cgfwc' ); ?></span>
+                            <span class="btn-text"><?php esc_html_e( 'Remove Gift Card', 'cgfwc' ); ?></span>
+                            <span class="btn-loading" style="display: none;"><?php esc_html_e( 'Removing...', 'cgfwc' ); ?></span>
                         </button>
                     <?php else : ?>
                         <button type="button" class="button cgfwc-apply-btn" data-action="apply">
-                            <span class="btn-text"><?php esc_html_e( 'Применить подарочную карту', 'cgfwc' ); ?></span>
-                            <span class="btn-loading" style="display: none;"><?php esc_html_e( 'Применяем...', 'cgfwc' ); ?></span>
+                            <span class="btn-text"><?php esc_html_e( 'Apply Gift Card', 'cgfwc' ); ?></span>
+                            <span class="btn-loading" style="display: none;"><?php esc_html_e( 'Applying...', 'cgfwc' ); ?></span>
                         </button>
                     <?php endif; ?>
                     
@@ -208,7 +208,7 @@ add_action( 'woocommerce_cart_coupon', function() {
                         <div class="giftcard-info">
                             <?php 
                             printf(
-                                esc_html__( 'Использовано: %s | Остаток: %s', 'cgfwc' ),
+                                esc_html__( 'Used: %s | Remaining: %s', 'cgfwc' ),
                                 wc_price( $card_info['used'] ),
                                 wc_price( $card_info['remaining'] )
                             ); 
@@ -237,52 +237,52 @@ function cgfwc_ajax_apply_giftcard() {
     check_ajax_referer( 'cgfwc_giftcard_action', 'nonce' );
     
     if ( ! is_user_logged_in() ) {
-        wp_send_json_error( __( 'Вы должны быть авторизованы для использования подарочных карт.', 'cgfwc' ) );
+        wp_send_json_error( __( 'You must be logged in to use gift cards.', 'cgfwc' ) );
     }
     
     $code = isset( $_POST['code'] ) ? sanitize_text_field( trim( $_POST['code'] ) ) : '';
     $amount_raw = isset( $_POST['amount'] ) ? $_POST['amount'] : '';
     
     if ( empty( $code ) ) {
-        wp_send_json_error( __( 'Пожалуйста, введите код подарочной карты.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Please enter a gift card code.', 'cgfwc' ) );
     }
     
     if ( strlen( $code ) !== 10 ) {
-        wp_send_json_error( __( 'Неверная длина кода подарочной карты.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Invalid gift card code length.', 'cgfwc' ) );
     }
     
     if ( ! preg_match( '/^GC[A-Z0-9]{8}$/', strtoupper( $code ) ) ) {
-        wp_send_json_error( __( 'Неверный формат кода подарочной карты.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Invalid gift card code format.', 'cgfwc' ) );
     }
     
     if ( ! is_numeric( $amount_raw ) ) {
-        wp_send_json_error( __( 'Пожалуйста, введите корректную сумму.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Please enter a valid amount.', 'cgfwc' ) );
     }
     
     $amount = floatval( $amount_raw );
     
     if ( $amount <= 0 ) {
-        wp_send_json_error( __( 'Пожалуйста, введите сумму больше нуля.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Please enter an amount greater than zero.', 'cgfwc' ) );
     }
     
     $min_amount = 1.00;
     if ( $amount < $min_amount ) {
-        wp_send_json_error( sprintf( __( 'Минимальная сумма к использованию: %s.', 'cgfwc' ), wc_price( $min_amount ) ) );
+        wp_send_json_error( sprintf( __( 'Minimum amount to use: %s.', 'cgfwc' ), wc_price( $min_amount ) ) );
     }
     
     $max_amount = 999999.99;
     if ( $amount > $max_amount ) {
-        wp_send_json_error( __( 'Сумма слишком большая.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Amount is too large.', 'cgfwc' ) );
     }
     
     $card_post = cgfwc_get_gift_card_by_code( $code );
     if ( ! $card_post ) {
         cgfwc_increment_failed_attempts( $code );
-        wp_send_json_error( __( 'Подарочная карта не найдена.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Gift card not found.', 'cgfwc' ) );
     }
     
     if ( ! cgfwc_detect_suspicious_activity( $code ) ) {
-        wp_send_json_error( __( 'Эта подарочная карта заблокирована по соображениям безопасности.', 'cgfwc' ) );
+        wp_send_json_error( __( 'This gift card has been blocked for security reasons.', 'cgfwc' ) );
     }
     
     $card_status = cgfwc_get_gift_card_status( $card_post );
@@ -294,16 +294,16 @@ function cgfwc_ajax_apply_giftcard() {
     $balance = $card_status['balance'];
     
     if ( $amount > $balance ) {
-        wp_send_json_error( sprintf( __( 'Сумма превышает доступный баланс (%s).', 'cgfwc' ), wc_price( $balance ) ) );
+        wp_send_json_error( sprintf( __( 'Amount exceeds available balance (%s).', 'cgfwc' ), wc_price( $balance ) ) );
     }
     
     $cart_total = WC()->cart->get_total( 'edit' );
     if ( $amount > $cart_total ) {
-        wp_send_json_error( sprintf( __( 'Сумма не может превышать общую стоимость корзины (%s).', 'cgfwc' ), wc_price( $cart_total ) ) );
+        wp_send_json_error( sprintf( __( 'Amount cannot exceed cart total (%s).', 'cgfwc' ), wc_price( $cart_total ) ) );
     }
     
     if ( ! cgfwc_cart_has_regular_product() ) {
-        wp_send_json_error( __( 'Подарочные карты можно использовать только с обычными товарами.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Gift cards can only be used with regular products.', 'cgfwc' ) );
     }
     
     WC()->session->set( 'giftcard_code', strtoupper( $code ) );
@@ -325,7 +325,7 @@ function cgfwc_ajax_apply_giftcard() {
     WC()->cart->calculate_fees();
     
     wp_send_json_success( [
-        'message' => sprintf( __( 'Подарочная карта успешно применена. Сумма: %s', 'cgfwc' ), wc_price( $amount ) ),
+        'message' => sprintf( __( 'Gift card applied successfully. Amount: %s', 'cgfwc' ), wc_price( $amount ) ),
         'cart_total' => WC()->cart->get_total(),
         'giftcard_amount' => wc_price( $amount )
     ] );
@@ -338,7 +338,7 @@ function cgfwc_ajax_remove_giftcard() {
     check_ajax_referer( 'cgfwc_giftcard_action', 'nonce' );
     
     if ( ! is_user_logged_in() ) {
-        wp_send_json_error( __( 'Вы должны быть авторизованы для управления подарочными картами.', 'cgfwc' ) );
+        wp_send_json_error( __( 'You must be logged in to manage gift cards.', 'cgfwc' ) );
     }
     
     $applied_code = WC()->session->get( 'giftcard_code', '' );
@@ -360,182 +360,18 @@ function cgfwc_ajax_remove_giftcard() {
         WC()->cart->calculate_fees();
         
         wp_send_json_success( [
-            'message' => __( 'Подарочная карта убрана из корзины.', 'cgfwc' ),
+            'message' => __( 'Gift card removed from cart.', 'cgfwc' ),
             'cart_total' => WC()->cart->get_total()
         ] );
     } else {
-        wp_send_json_error( __( 'Подарочная карта не была применена.', 'cgfwc' ) );
+        wp_send_json_error( __( 'Gift card was not applied.', 'cgfwc' ) );
     }
 }
 
 /**
- * Legacy обработчик для совместимости
+ * Legacy функции удалены - больше не нужны
+ * Заменены на AJAX обработчики cgfwc_ajax_apply_giftcard() и cgfwc_ajax_remove_giftcard()
  */
-add_action( 'woocommerce_cart_updated', function() {
-    if ( ! empty( $_POST['apply_giftcard'] ) ) {
-        cgfwc_apply_gift_card();
-    }
-    
-    if ( ! empty( $_POST['remove_giftcard'] ) ) {
-        cgfwc_remove_gift_card();
-    }
-});
-
-/**
- */
-function cgfwc_apply_gift_card() {
-    if ( ! isset( $_POST['cgfwc_nonce'] ) || ! wp_verify_nonce( $_POST['cgfwc_nonce'], 'cgfwc_giftcard_action' ) ) {
-        wc_add_notice( __( 'Security check failed. Please try again.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! is_user_logged_in() ) {
-        wc_add_notice( __( 'You must be logged in to use gift cards.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! cgfwc_check_rate_limit() ) {
-        wc_add_notice( __( 'Too many attempts. Please try again later.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! cgfwc_check_temporary_block() ) {
-        wc_add_notice( __( 'Your IP is temporarily blocked due to suspicious activity.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $code = isset( $_POST['giftcard_code'] ) ? sanitize_text_field( trim( $_POST['giftcard_code'] ) ) : '';
-    $amount_raw = isset( $_POST['giftcard_amount'] ) ? $_POST['giftcard_amount'] : '';
-
-    if ( empty( $code ) ) {
-        wc_add_notice( __( 'Please enter a gift card code.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( strlen( $code ) !== 10 ) {
-        wc_add_notice( __( 'Invalid gift card code length.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! preg_match( '/^GC[A-Z0-9]{8}$/', strtoupper( $code ) ) ) {
-        wc_add_notice( __( 'Invalid gift card code format.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! is_numeric( $amount_raw ) ) {
-        wc_add_notice( __( 'Please enter a valid amount.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $amount = floatval( $amount_raw );
-    
-    if ( $amount <= 0 ) {
-        wc_add_notice( __( 'Please enter an amount greater than zero.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $min_amount = 1.00;
-    if ( $amount < $min_amount ) {
-        wc_add_notice( sprintf( __( 'Minimum amount to use is %s.', 'cgfwc' ), wc_price( $min_amount ) ), 'error' );
-        return;
-    }
-
-    $max_amount = 999999.99;
-    if ( $amount > $max_amount ) {
-        wc_add_notice( __( 'Amount is too large.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $card_post = cgfwc_get_gift_card_by_code( $code );
-    if ( ! $card_post ) {
-        cgfwc_increment_failed_attempts( $code );
-        wc_add_notice( __( 'Gift card not found.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! cgfwc_detect_suspicious_activity( $code ) ) {
-        wc_add_notice( __( 'This gift card has been blocked for security reasons.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $card_status = cgfwc_get_gift_card_status( $card_post );
-    if ( ! $card_status['valid'] ) {
-        cgfwc_increment_failed_attempts( $code );
-        wc_add_notice( $card_status['message'], 'error' );
-        return;
-    }
-
-    $balance = $card_status['balance'];
-
-    if ( $amount > $balance ) {
-        wc_add_notice( sprintf( __( 'Amount exceeds available balance (%s).', 'cgfwc' ), wc_price( $balance ) ), 'error' );
-        return;
-    }
-
-    $cart_total = WC()->cart->get_total( 'edit' );
-    if ( $amount > $cart_total ) {
-        wc_add_notice( sprintf( __( 'Amount cannot exceed cart total (%s).', 'cgfwc' ), wc_price( $cart_total ) ), 'error' );
-        return;
-    }
-
-    if ( ! cgfwc_cart_has_regular_product() ) {
-        wc_add_notice( __( 'Gift cards can only be used with regular products.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    WC()->session->set( 'giftcard_code', strtoupper( $code ) );
-    WC()->session->set( 'giftcard_amount', $amount );
-    
-    cgfwc_reset_failed_attempts( $code );
-    
-    $logger = wc_get_logger();
-    $logger->info( "Gift card {$code} applied for amount {$amount}", [
-        'source' => 'giftcards',
-        'user_id' => get_current_user_id(),
-        'user_ip' => cgfwc_get_user_ip(),
-        'balance_before' => $balance,
-        'balance_after' => $balance - $amount,
-        'cart_total' => $cart_total,
-        'timestamp' => current_time( 'mysql' )
-    ] );
-
-    wc_add_notice( sprintf( __( 'Gift card applied successfully. Amount: %s', 'cgfwc' ), wc_price( $amount ) ), 'success' );
-    WC()->cart->calculate_fees();
-}
-
-/**
- */
-function cgfwc_remove_gift_card() {
-    if ( ! isset( $_POST['cgfwc_nonce'] ) || ! wp_verify_nonce( $_POST['cgfwc_nonce'], 'cgfwc_giftcard_action' ) ) {
-        wc_add_notice( __( 'Security check failed. Please try again.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    if ( ! is_user_logged_in() ) {
-        wc_add_notice( __( 'You must be logged in to manage gift cards.', 'cgfwc' ), 'error' );
-        return;
-    }
-
-    $applied_code = WC()->session->get( 'giftcard_code', '' );
-    $applied_amount = WC()->session->get( 'giftcard_amount', 0 );
-    
-    if ( $applied_code ) {
-        $logger = wc_get_logger();
-        $logger->info( "Gift card {$applied_code} removed from cart", [
-            'source' => 'giftcards',
-            'user_id' => get_current_user_id(),
-            'user_ip' => cgfwc_get_user_ip(),
-            'amount_removed' => $applied_amount,
-            'timestamp' => current_time( 'mysql' )
-        ] );
-        
-        WC()->session->__unset( 'giftcard_code' );
-        WC()->session->__unset( 'giftcard_amount' );
-        
-        wc_add_notice( __( 'Gift card removed from cart.', 'cgfwc' ), 'success' );
-        WC()->cart->calculate_fees();
-    }
-}
 
 /**
  */
@@ -559,12 +395,12 @@ add_action( 'wp_head', function() {
                 
                 // Валидация
                 if (!code) {
-                    showMessage($messages, 'Пожалуйста, введите код подарочной карты.', 'error');
+                    showMessage($messages, 'Please enter a gift card code.', 'error');
                     return;
                 }
                 
                 if (!amount || amount <= 0) {
-                    showMessage($messages, 'Пожалуйста, введите корректную сумму.', 'error');
+                    showMessage($messages, 'Please enter a valid amount.', 'error');
                     return;
                 }
                 
@@ -595,7 +431,7 @@ add_action( 'wp_head', function() {
                         }
                     },
                     error: function() {
-                        showMessage($messages, 'Произошла ошибка. Попробуйте еще раз.', 'error');
+                        showMessage($messages, 'An error occurred. Please try again.', 'error');
                         setButtonLoading($btn, false);
                     }
                 });
@@ -635,7 +471,7 @@ add_action( 'wp_head', function() {
                         }
                     },
                     error: function() {
-                        showMessage($messages, 'Произошла ошибка. Попробуйте еще раз.', 'error');
+                        showMessage($messages, 'An error occurred. Please try again.', 'error');
                         setButtonLoading($btn, false);
                     }
                 });
