@@ -40,11 +40,15 @@ jobs:
           body: |
             ## Gift Cards Plugin v${{ steps.version.outputs.VERSION }}
             
-            **Security Enhancements:**
-            - Rate limiting system
-            - Suspicious activity detection  
-            - Fixed double balance deduction
-            - IP-based blocking
-            - Enhanced logging
+            **Critical Bug Fixes:**
+            - Fixed GitHub updater system not displaying update notifications
+            - Added proper validation for GitHub API responses
+            - Fixed version comparison logic to handle 'v' prefix correctly
+            - Improved error handling in update check methods
+            
+            **Improvements:**
+            - Added debug information for troubleshooting updates (when WP_DEBUG enabled)
+            - Enhanced initialization process for update system
+            - Better logging for update checks
             
             **Requirements:** WordPress 5.0+, WooCommerce 5.0+, PHP 7.4+

@@ -23,7 +23,7 @@ class CGFWC_GitHub_Updater {
         add_action( 'admin_notices', array( $this, 'admin_notices' ) );
     }
     
- // Check for updates
+     // Check for updates
     public function check_github_update( $transient ) {
         if ( empty( $transient->checked ) ) {
             return $transient;
@@ -31,9 +31,11 @@ class CGFWC_GitHub_Updater {
         
         $github_info = $this->get_github_release_info();
         
-        // Очищаем версию от префикса 'v' для корректного сравнения
-        $github_version = ltrim($github_info->tag_name, 'v');
-        if ( $github_info && version_compare( $this->current_version, $github_version, '<' ) ) {
+        if ( $github_info && isset($github_info->tag_name) ) {
+            // Очищаем версию от префикса 'v' для корректного сравнения
+            $github_version = ltrim($github_info->tag_name, 'v');
+            
+            if ( version_compare( $this->current_version, $github_version, '<' ) ) {
             $transient->response[ $this->plugin_slug ] = (object) array(
                 'slug' => dirname( $this->plugin_slug ),
                 'new_version' => $github_version,
@@ -51,6 +53,7 @@ class CGFWC_GitHub_Updater {
             );
             
             $this->log_update_check( $github_info );
+            }
         }
         
         return $transient;
@@ -195,15 +198,18 @@ class CGFWC_GitHub_Updater {
         
         $github_info = $this->get_github_release_info();
         
-        // Очищаем версию от префикса 'v' для корректного сравнения
-        $github_version = ltrim($github_info->tag_name, 'v');
-        if ( $github_info && version_compare( $this->current_version, $github_version, '<' ) ) {
+        if ( $github_info && isset($github_info->tag_name) ) {
+            // Очищаем версию от префикса 'v' для корректного сравнения
+            $github_version = ltrim($github_info->tag_name, 'v');
+            
+            if ( version_compare( $this->current_version, $github_version, '<' ) ) {
             echo '<div class="notice notice-warning is-dismissible">';
             echo '<p><strong>Gift Cards Plugin Update Available!</strong></p>';
             echo '<p>Version ' . esc_html( $github_version ) . ' is available. ';
             echo '<a href="' . admin_url( 'plugins.php' ) . '">Update now</a> or ';
             echo '<a href="' . esc_url( $github_info->html_url ) . '" target="_blank">view on GitHub</a>.</p>';
             echo '</div>';
+            }
         }
     }
     
@@ -240,11 +246,13 @@ class CGFWC_GitHub_Updater {
   // Log the update check
     private function log_update_check( $github_info ) {
         $logger = wc_get_logger();
+        $github_version = ltrim($github_info->tag_name, 'v');
         $logger->info( "GitHub update check performed", [
             'source' => 'giftcards',
             'current_version' => $this->current_version,
             'latest_version' => $github_info->tag_name,
-            'update_available' => version_compare( $this->current_version, $github_info->tag_name, '<' ),
+            'github_version_clean' => $github_version,
+            'update_available' => version_compare( $this->current_version, $github_version, '<' ),
             'check_time' => current_time( 'mysql' )
         ] );
     }
@@ -261,22 +269,34 @@ class CGFWC_GitHub_Updater {
 
     // Initialize the GitHub updater
 function cgfwc_init_github_updater() {
-    if ( ! class_exists( 'CGFWC_GitHub_Updater' ) ) {
+    // Проверяем существование класса и файла плагина
+    if ( defined('CGFWC_PLUGIN_DIR') && file_exists(CGFWC_PLUGIN_DIR . 'custom-giftcards-for-woocommerce.php') ) {
         new CGFWC_GitHub_Updater( CGFWC_PLUGIN_DIR . 'custom-giftcards-for-woocommerce.php' );
-    }
-    
-    // Принудительная очистка кэша при каждом запросе в админке (временное решение)
-    if (is_admin() && current_user_can('update_plugins')) {
-        delete_transient('cgfwc_github_latest');
+        
+        // Принудительная очистка кэша при каждом запросе в админке для отладки
+        if (is_admin() && current_user_can('update_plugins')) {
+            delete_transient('cgfwc_github_latest');
+        }
     }
 }
 
 // Более высокий приоритет для гарантированной загрузки после других плагинов
 add_action( 'plugins_loaded', 'cgfwc_init_github_updater', 20 );
 
-// Добавляем дополнительный хук для проверки обновлений при загрузке админки
-add_action( 'admin_init', function() {
-    if (current_user_can('update_plugins')) {
-        delete_site_transient('update_plugins');
+// Добавляем отладочную информацию для проверки работы системы обновлений
+add_action( 'admin_notices', function() {
+    if (current_user_can('update_plugins') && WP_DEBUG) {
+        $github_response = wp_remote_get('https://api.github.com/repos/butuzoff/giftcards-for-woocommerce/releases/latest');
+        
+        if (!is_wp_error($github_response)) {
+            $github_data = json_decode(wp_remote_retrieve_body($github_response), true);
+            $github_version = ltrim($github_data['tag_name'], 'v');
+            $current_version = defined('CGFWC_VERSION') ? CGFWC_VERSION : 'Unknown';
+            
+            echo '<div class="notice notice-info"><p>';
+            echo '<strong>Debug Info:</strong> Current: ' . $current_version . ', GitHub: ' . $github_version;
+            echo ' | Comparison: ' . (version_compare($current_version, $github_version, '<') ? 'Update Available' : 'Up to date');
+            echo '</p></div>';
+        }
     }
-}, 20); 
+}, 5); 
