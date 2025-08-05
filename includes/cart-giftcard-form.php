@@ -172,9 +172,12 @@ add_action( 'woocommerce_cart_coupon', function() {
         ?>
     <tr class="coupon giftcard-coupon">
         <td colspan="6" class="actions">
-            <div class="woocommerce-giftcard">
-                <h3><?php esc_html_e( 'Подарочная карта', 'cgfwc' ); ?></h3>
-                <div class="coupon">
+                         <div class="woocommerce-giftcard">
+                 <h3><?php esc_html_e( 'Подарочная карта', 'cgfwc' ); ?></h3>
+                 
+                 <div class="giftcard-messages" style="display: none;"></div>
+                 
+                 <div class="coupon">
                     <input type="text" name="giftcard_code" class="input-text" id="giftcard_code"
                            value="<?php echo esc_attr( $applied_code ); ?>"
                            placeholder="<?php esc_attr_e( 'Код подарочной карты', 'cgfwc' ); ?>"
@@ -211,11 +214,9 @@ add_action( 'woocommerce_cart_coupon', function() {
                             ); 
                             ?>
                         </div>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="giftcard-messages" style="display: none;"></div>
-            </div>
+                                         <?php endif; ?>
+                 </div>
+             </div>
         </td>
     </tr>
     <?php
@@ -705,12 +706,12 @@ add_action( 'wp_head', function() {
             color: #666;
         }
         
-        /* Стили для сообщений */
-        .giftcard-messages {
-            margin-top: 15px;
-            position: relative;
-            z-index: 1;
-        }
+                 /* Стили для сообщений */
+         .giftcard-messages {
+             margin: 10px 0 15px 0;
+             position: relative;
+             z-index: 1;
+         }
         
         .giftcard-message {
             padding: 10px 15px;
@@ -772,9 +773,9 @@ add_action( 'wp_head', function() {
                 padding: 8px 12px;
             }
             
-            .giftcard-messages {
-                margin-top: 12px;
-            }
+                         .giftcard-messages {
+                 margin: 8px 0 12px 0;
+             }
         }
         </style>
         <?php
