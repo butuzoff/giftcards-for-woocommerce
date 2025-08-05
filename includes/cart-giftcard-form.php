@@ -149,7 +149,7 @@ function cgfwc_get_gift_card_status( $card_post ) {
 
 /**
  */
-add_action( 'woocommerce_before_cart_table', function() {
+add_action( 'woocommerce_cart_coupon', function() {
     if ( ! cgfwc_cart_has_regular_product() ) {
         return;
     }
@@ -169,60 +169,52 @@ add_action( 'woocommerce_before_cart_table', function() {
             ];
         }
     }
-    ?>
-    <div class="razzi-giftcard-form-wrapper">
-        <div class="razzi-giftcard-form">
-            <h4 class="giftcard-title"><?php esc_html_e( 'Gift Card', 'cgfwc' ); ?></h4>
-            <form method="post" class="giftcard-apply-form">
-                <div class="giftcard-fields">
-                    <div class="giftcard-field">
-                        <label for="giftcard_code"><?php esc_html_e( 'Gift Card Code:', 'cgfwc' ); ?></label>
-                        <input type="text" name="giftcard_code" class="input-text" id="giftcard_code"
-                               value="<?php echo esc_attr( $applied_code ); ?>"
-                               placeholder="<?php esc_attr_e( 'Enter gift card code', 'cgfwc' ); ?>"
-                               <?php echo $applied_code ? 'readonly' : ''; ?>>
-                    </div>
+        ?>
+    <tr class="coupon giftcard-coupon">
+        <td colspan="6" class="actions">
+            <form method="post" class="woocommerce-giftcard">
+                <div class="coupon">
+                    <label for="giftcard_code"><?php esc_html_e( 'Gift card code:', 'cgfwc' ); ?></label>
+                    <input type="text" name="giftcard_code" class="input-text" id="giftcard_code"
+                           value="<?php echo esc_attr( $applied_code ); ?>"
+                           placeholder="<?php esc_attr_e( 'Gift card code', 'cgfwc' ); ?>"
+                           <?php echo $applied_code ? 'readonly' : ''; ?>>
                     
-                    <div class="giftcard-field">
-                        <label for="giftcard_amount"><?php esc_html_e( 'Amount to use:', 'cgfwc' ); ?></label>
+                    <?php if ( ! $applied_code ) : ?>
+                        <label for="giftcard_amount"><?php esc_html_e( 'Amount:', 'cgfwc' ); ?></label>
                         <input type="number" name="giftcard_amount" class="input-text" id="giftcard_amount"
                                value="<?php echo esc_attr( $applied_amount ); ?>"
                                placeholder="<?php esc_attr_e( 'Amount to use', 'cgfwc' ); ?>"
                                step="0.01" min="0" max="<?php echo $card_info ? esc_attr( $card_info['balance'] ) : ''; ?>">
-                    </div>
+                    <?php endif; ?>
                     
-                    <div class="giftcard-actions">
-                        <?php if ( $applied_code ) : ?>
-                            <button type="submit" class="button btn razzi-btn-primary" name="remove_giftcard" value="1">
-                                <?php esc_html_e( 'Remove', 'cgfwc' ); ?>
-                            </button>
-                        <?php else : ?>
-                            <button type="submit" class="button btn razzi-btn-primary" name="apply_giftcard" value="1">
-                                <?php esc_html_e( 'Apply gift card', 'cgfwc' ); ?>
-                            </button>
-                        <?php endif; ?>
-                    </div>
+                    <?php if ( $applied_code ) : ?>
+                        <button type="submit" class="button" name="remove_giftcard" value="1">
+                            <?php esc_html_e( 'Remove gift card', 'cgfwc' ); ?>
+                        </button>
+                    <?php else : ?>
+                        <button type="submit" class="button" name="apply_giftcard" value="1">
+                            <?php esc_html_e( 'Apply gift card', 'cgfwc' ); ?>
+                        </button>
+                    <?php endif; ?>
                     
                     <?php wp_nonce_field( 'cgfwc_giftcard_action', 'cgfwc_nonce' ); ?>
-                </div>
-                
-                <?php if ( $card_info ) : ?>
-                    <div class="giftcard-info razzi-card-info">
-                        <div class="info-content">
+                    
+                    <?php if ( $card_info ) : ?>
+                        <div class="giftcard-info">
                             <?php 
                             printf(
-                                esc_html__( 'Balance: %s | Used: %s | Remaining: %s', 'cgfwc' ),
-                                wc_price( $card_info['balance'] ),
+                                esc_html__( 'Used: %s | Remaining: %s', 'cgfwc' ),
                                 wc_price( $card_info['used'] ),
                                 wc_price( $card_info['remaining'] )
                             ); 
                             ?>
                         </div>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
             </form>
-        </div>
-    </div>
+        </td>
+    </tr>
     <?php
 }, 9 );
 
@@ -400,119 +392,45 @@ add_action( 'wp_head', function() {
     if ( is_cart() ) {
         ?>
         <style>
-        .razzi-giftcard-form-wrapper {
-            margin-bottom: 30px;
-            background: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .razzi-giftcard-form .giftcard-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin: 0 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .giftcard-fields {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-        
-        .giftcard-field {
+        .giftcard-coupon .coupon {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
         
-        .giftcard-field label {
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 8px;
-            font-size: 14px;
+        .giftcard-coupon .coupon label {
+            margin-right: 5px;
+            font-weight: normal;
         }
         
-        .giftcard-field input.input-text {
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 12px 15px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-            background: #fff;
+        .giftcard-coupon .coupon input[type="text"],
+        .giftcard-coupon .coupon input[type="number"] {
+            flex: 0 0 auto;
+            width: 150px;
+            margin-right: 10px;
         }
         
-        .giftcard-field input.input-text:focus {
-            border-color: #007cba;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0,124,186,0.1);
+        .giftcard-coupon .coupon .button {
+            margin-left: 5px;
         }
         
-        .giftcard-actions button.razzi-btn-primary {
-            background: #007cba;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 24px;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: fit-content;
-        }
-        
-        .giftcard-actions button.razzi-btn-primary:hover {
-            background: #005a87;
-            transform: translateY(-1px);
-        }
-        
-        .razzi-card-info {
-            margin-top: 20px;
-            padding: 15px 20px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 6px;
-            border-left: 4px solid #28a745;
-        }
-        
-        .razzi-card-info .info-content {
-            color: #495057;
-            font-size: 14px;
-            font-weight: 500;
+        .giftcard-info {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
         }
         
         @media (max-width: 768px) {
-            .razzi-giftcard-form-wrapper {
-                padding: 20px;
-                margin-bottom: 20px;
+            .giftcard-coupon .coupon {
+                flex-direction: column;
+                align-items: flex-start;
             }
             
-            .giftcard-fields {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .giftcard-actions button.razzi-btn-primary {
+            .giftcard-coupon .coupon input[type="text"],
+            .giftcard-coupon .coupon input[type="number"] {
                 width: 100%;
-                padding: 14px 24px;
-            }
-            
-            .razzi-card-info {
-                padding: 12px 15px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .razzi-giftcard-form-wrapper {
-                padding: 15px;
-            }
-            
-            .razzi-giftcard-form .giftcard-title {
-                font-size: 16px;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
             }
         }
         </style>
