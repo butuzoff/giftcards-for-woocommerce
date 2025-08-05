@@ -679,6 +679,8 @@ add_action( 'wp_head', function() {
             flex-wrap: wrap;
             align-items: center;
             gap: 10px;
+            position: relative;
+            z-index: 2;
         }
         
         .giftcard-coupon .coupon input[type="text"],
@@ -692,6 +694,11 @@ add_action( 'wp_head', function() {
             margin-left: 5px;
         }
         
+        .woocommerce-giftcard {
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
         .giftcard-info {
             margin-top: 10px;
             font-size: 0.9em;
@@ -700,14 +707,18 @@ add_action( 'wp_head', function() {
         
         /* Стили для сообщений */
         .giftcard-messages {
-            margin-top: 10px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
         }
         
         .giftcard-message {
-            padding: 8px 12px;
-            border-radius: 4px;
+            padding: 10px 15px;
+            border-radius: 6px;
             font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
         }
         
         .giftcard-success {
@@ -758,7 +769,11 @@ add_action( 'wp_head', function() {
             
             .giftcard-message {
                 font-size: 13px;
-                padding: 6px 10px;
+                padding: 8px 12px;
+            }
+            
+            .giftcard-messages {
+                margin-top: 12px;
             }
         }
         </style>
